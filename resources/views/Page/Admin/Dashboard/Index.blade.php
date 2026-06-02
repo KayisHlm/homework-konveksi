@@ -7,10 +7,10 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box">
-                                <h4 class="mb-0 fw-semibold">Sales</h4>
+                                <h4 class="mb-0 fw-semibold">Dashboard</h4>
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item">Dashboards</li>
-                                    <li class="breadcrumb-item active">Sales</li>
+                                    <li class="breadcrumb-item active">Dashboard</li>
                                 </ol>
                             </div>
                         </div>
@@ -34,7 +34,7 @@
                                     <p class="text-muted">Total Penjualan</p>
                                     <span class="badge fs-12 badge-soft-success"
                                         ><i class="ti ti-arrow-badge-up"></i>
-                                        8.72%</span
+                                        {{ $paidInvoiceCount }} invoice lunas</span
                                     >
                                     <i
                                         class="bx bx-doughnut-chart widget-icon"
@@ -56,12 +56,12 @@
                                         class="fs-36 text-success"
                                     ></iconify-icon>
                                     <h3 class="mb-0 fw-bold mt-3 mb-1">
-                                        Rp {{ number_format(0, 0, ',', '.') }}
+                                        {{ $totalOrders }}
                                     </h3>
-                                    <p class="text-muted">Total Pengeluaran</p>
-                                    <span class="badge fs-12 badge-soft-danger"
-                                        ><i class="ti ti-arrow-badge-down"></i>
-                                        3.28%</span
+                                    <p class="text-muted">Total Order</p>
+                                    <span class="badge fs-12 badge-soft-warning"
+                                        ><i class="ti ti-clock-hour-4"></i>
+                                        {{ $pendingOrderCount }} pending</span
                                     >
                                     <i
                                         class="bx bx-bar-chart-alt-2 widget-icon"
@@ -86,9 +86,9 @@
                                         {{ $totalCustomers }}
                                     </h3>
                                     <p class="text-muted">Total Pelanggan</p>
-                                    <span class="badge fs-12 badge-soft-danger"
-                                        ><i class="ti ti-arrow-badge-down"></i>
-                                        5.69%</span
+                                    <span class="badge fs-12 badge-soft-info"
+                                        ><i class="ti ti-user-plus"></i>
+                                        {{ $newCustomersThisMonth }} baru bulan ini</span
                                     >
                                     <i
                                         class="bx bx-building-house widget-icon"
@@ -110,12 +110,12 @@
                                         class="fs-36 text-orange"
                                     ></iconify-icon>
                                     <h3 class="mb-0 fw-bold mt-3 mb-1">
-                                        Rp {{ number_format((float) $totalSalesPaid, 0, ',', '.') }}
+                                        {{ $totalInvoices }}
                                     </h3>
-                                    <p class="text-muted">Profit</p>
+                                    <p class="text-muted">Total Invoice</p>
                                     <span class="badge fs-12 badge-soft-success"
-                                        ><i class="ti ti-arrow-badge-up"></i>
-                                        10.58%</span
+                                        ><i class="ti ti-file-invoice"></i>
+                                        {{ $newInvoicesThisMonth }} dibuat bulan ini</span
                                     >
                                     <i class="bx bx-bowl-hot widget-icon"></i>
                                 </div>
@@ -138,9 +138,9 @@
                                         Rp {{ number_format((float) $totalOutstanding, 0, ',', '.') }}
                                     </h3>
                                     <p class="text-muted">Belum Lunas</p>
-                                    <span class="badge fs-12 badge-soft-success"
-                                        ><i class="ti ti-arrow-badge-up"></i>
-                                        8.72%</span
+                                    <span class="badge fs-12 badge-soft-danger"
+                                        ><i class="ti ti-alert-circle"></i>
+                                        {{ $outstandingInvoiceCount }} invoice tertunda</span
                                     >
                                     <i
                                         class="bx bx-cricket-ball widget-icon"
@@ -161,32 +161,7 @@
                                     class="card-header d-flex justify-content-between align-items-center"
                                 >
                                     <h4 class="card-title">Overview</h4>
-                                    <div>
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-soft-secondary"
-                                        >
-                                            ALL
-                                        </button>
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-soft-secondary"
-                                        >
-                                            1M
-                                        </button>
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-soft-secondary"
-                                        >
-                                            6M
-                                        </button>
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-soft-secondary active"
-                                        >
-                                            1Y
-                                        </button>
-                                    </div>
+                                    <span class="badge badge-soft-primary">12 bulan terakhir</span>
                                 </div>
                                 <!-- end card-title-->
 
@@ -210,49 +185,9 @@
                                     class="card-header d-flex justify-content-between align-items-center"
                                 >
                                     <h4 class="card-title">
-                                        Penjualan Berdasarkan Bahan
+                                        Penjualan Berdasarkan Produk
                                     </h4>
-                                    <div class="dropdown">
-                                        <a
-                                            href="#"
-                                            class="dropdown-toggle arrow-none card-drop"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            <iconify-icon
-                                                icon="iconamoon:menu-kebab-vertical-circle-duotone"
-                                                class="fs-20 align-middle text-muted"
-                                            ></iconify-icon>
-                                        </a>
-                                        <div
-                                            class="dropdown-menu dropdown-menu-end"
-                                        >
-                                            <!-- item-->
-                                            <a
-                                                href="javascript:void(0);"
-                                                class="dropdown-item"
-                                                >Sales Report</a
-                                            >
-                                            <!-- item-->
-                                            <a
-                                                href="javascript:void(0);"
-                                                class="dropdown-item"
-                                                >Export Report</a
-                                            >
-                                            <!-- item-->
-                                            <a
-                                                href="javascript:void(0);"
-                                                class="dropdown-item"
-                                                >Profit</a
-                                            >
-                                            <!-- item-->
-                                            <a
-                                                href="javascript:void(0);"
-                                                class="dropdown-item"
-                                                >Action</a
-                                            >
-                                        </div>
-                                    </div>
+                                    <span class="badge badge-soft-primary">Top 5 produk</span>
                                 </div>
                                 <!-- end card-header-->
                                 <div class="card-body">
@@ -271,46 +206,31 @@
                                             >
                                                 <tr>
                                                     <th class="py-1">
-                                                        Corduroy
+                                                        Produk
                                                     </th>
                                                     <th class="py-1">Orders</th>
-                                                    <th class="py-1">Perc.</th>
+                                                    <th class="py-1">Porsi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>Work Jacket</td>
-                                                    <td>187,232</td>
-                                                    <td>
-                                                        48.63%
-                                                        <span
-                                                            class="badge badge-soft-success ms-1"
-                                                            >2.5% Up</span
-                                                        >
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Coach Jacket</td>
-                                                    <td>126,874</td>
-                                                    <td>
-                                                        36.08%
-                                                        <span
-                                                            class="badge badge-soft-success ms-1"
-                                                            >8.5% Up</span
-                                                        >
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Other</td>
-                                                    <td>90,127</td>
-                                                    <td>
-                                                        23.41%
-                                                        <span
-                                                            class="badge badge-soft-danger ms-1"
-                                                            >10.98% Down</span
-                                                        >
-                                                    </td>
-                                                </tr>
+                                                @php
+                                                    $totalProductOrders = max($salesByProduct->sum('orders'), 1);
+                                                @endphp
+                                                @forelse ($salesByProduct as $product)
+                                                    <tr>
+                                                        <td>{{ $product['name'] }}</td>
+                                                        <td>{{ number_format($product['orders'], 0, ',', '.') }}</td>
+                                                        <td>
+                                                            {{ number_format(($product['orders'] / $totalProductOrders) * 100, 1, ',', '.') }}%
+                                                        </td>
+                                                    </tr>
+                                                @empty
+                                                    <tr>
+                                                        <td colspan="3" class="text-center text-muted py-3">
+                                                            Belum ada data produk.
+                                                        </td>
+                                                    </tr>
+                                                @endforelse
                                             </tbody>
                                         </table>
                                     </div>
@@ -389,13 +309,16 @@
                                                     </td>
                                                     <td>{{ $order->created_at?->format('d M, Y') }}</td>
                                                     <td>
-                                                        <div
-                                                            class="avatar-sm bg-light rounded d-inline-flex align-items-center justify-content-center"
-                                                        >
-                                                            <iconify-icon
-                                                                icon="iconamoon:shopping-bag-duotone"
-                                                                class="fs-20 text-muted"
-                                                            ></iconify-icon>
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div
+                                                                class="avatar-sm bg-light rounded d-inline-flex align-items-center justify-content-center"
+                                                            >
+                                                                <iconify-icon
+                                                                    icon="iconamoon:shopping-bag-duotone"
+                                                                    class="fs-20 text-muted"
+                                                                ></iconify-icon>
+                                                            </div>
+                                                            <span>{{ $order->product_name ?? '-' }}</span>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -404,12 +327,12 @@
                                                     <td>{{ $order->customer?->email ?? '-' }}</td>
                                                     <td>{{ $order->customer?->phone ?? '-' }}</td>
                                                     <td>{{ $order->customer?->address ?? '-' }}</td>
-                                                    <td>{{ $order->payment_type }}</td>
+                                                    <td>{{ ucfirst($order->payment_type) }}</td>
                                                     <td>
                                                         <i
                                                             class="bx bxs-circle me-1 {{ $order->payment_status == 'paid' ? 'text-success' : ($order->payment_status == 'pending' ? 'text-primary' : 'text-danger') }}"
                                                         ></i>
-                                                        {{ $order->payment_status }}
+                                                        {{ ucfirst($order->payment_status) }}
                                                     </td>
                                                 </tr>
                                             @empty
@@ -430,49 +353,19 @@
                                 >
                                     <div class="col-sm">
                                         <div class="text-muted">
-                                            Showing
+                                            Menampilkan
                                             <span class="fw-semibold">{{ $recentOrders->count() }}</span>
-                                            of
+                                            dari
                                             <span class="fw-semibold"
                                                 >{{ $totalOrders }}</span
                                             >
-                                            orders
+                                            order terbaru
                                         </div>
                                     </div>
                                     <div class="col-sm-auto mt-3 mt-sm-0">
-                                        <ul
-                                            class="pagination pagination-rounded m-0"
-                                        >
-                                            <li class="page-item">
-                                                <a href="#" class="page-link"
-                                                    ><i
-                                                        class="bx bx-left-arrow-alt"
-                                                    ></i
-                                                ></a>
-                                            </li>
-                                            <li class="page-item active">
-                                                <a href="#" class="page-link"
-                                                    >1</a
-                                                >
-                                            </li>
-                                            <li class="page-item">
-                                                <a href="#" class="page-link"
-                                                    >2</a
-                                                >
-                                            </li>
-                                            <li class="page-item">
-                                                <a href="#" class="page-link"
-                                                    >3</a
-                                                >
-                                            </li>
-                                            <li class="page-item">
-                                                <a href="#" class="page-link"
-                                                    ><i
-                                                        class="bx bx-right-arrow-alt"
-                                                    ></i
-                                                ></a>
-                                            </li>
-                                        </ul>
+                                        <a href="{{ route('order') }}" class="btn btn-sm btn-light">
+                                            Lihat semua order
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -487,5 +380,140 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('build/assets/js/pages/dashboard.sales.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const overviewElement = document.querySelector('#dash-overview-chart');
+            const salesCategoryElement = document.querySelector('#sales-category-chart');
+            const overviewLabels = @json($overviewLabels);
+            const paidSalesSeries = @json($paidSalesSeries);
+            const outstandingSalesSeries = @json($outstandingSalesSeries);
+            const orderSeries = @json($orderSeries);
+            const salesByProduct = @json($salesByProduct);
+
+            const currencyFormatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 0,
+            });
+
+            const renderFallback = (element, message) => {
+                if (!element) {
+                    return;
+                }
+
+                element.innerHTML = `<div class="text-center text-muted py-5">${message}</div>`;
+            };
+
+            if (typeof ApexCharts === 'undefined') {
+                renderFallback(overviewElement, 'Library chart tidak tersedia.');
+                renderFallback(salesCategoryElement, 'Library chart tidak tersedia.');
+                return;
+            }
+
+            if (overviewElement) {
+                new ApexCharts(overviewElement, {
+                    chart: {
+                        type: 'area',
+                        height: 350,
+                        toolbar: {
+                            show: false,
+                        },
+                    },
+                    series: [
+                        {
+                            name: 'Penjualan Lunas',
+                            data: paidSalesSeries,
+                        },
+                        {
+                            name: 'Belum Lunas',
+                            data: outstandingSalesSeries,
+                        },
+                        {
+                            name: 'Jumlah Order',
+                            data: orderSeries,
+                        },
+                    ],
+                    stroke: {
+                        curve: 'smooth',
+                        width: [3, 3, 3],
+                    },
+                    dataLabels: {
+                        enabled: false,
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.35,
+                            opacityTo: 0.05,
+                            stops: [0, 90, 100],
+                        },
+                    },
+                    colors: ['#3e60d5', '#f15776', '#47ad77'],
+                    xaxis: {
+                        categories: overviewLabels,
+                    },
+                    yaxis: [
+                        {
+                            labels: {
+                                formatter: (value) => currencyFormatter.format(value || 0),
+                            },
+                        },
+                        {
+                            opposite: true,
+                            labels: {
+                                formatter: (value) => Math.round(value || 0),
+                            },
+                        },
+                    ],
+                    tooltip: {
+                        shared: true,
+                        intersect: false,
+                        y: [
+                            {
+                                formatter: (value) => currencyFormatter.format(value || 0),
+                            },
+                            {
+                                formatter: (value) => currencyFormatter.format(value || 0),
+                            },
+                            {
+                                formatter: (value) => `${Math.round(value || 0)} order`,
+                            },
+                        ],
+                    },
+                    legend: {
+                        position: 'top',
+                    },
+                }).render();
+            }
+
+            if (salesCategoryElement) {
+                if (!salesByProduct.length) {
+                    renderFallback(salesCategoryElement, 'Belum ada data produk.');
+                    return;
+                }
+
+                new ApexCharts(salesCategoryElement, {
+                    chart: {
+                        type: 'donut',
+                        height: 320,
+                    },
+                    series: salesByProduct.map((item) => item.orders),
+                    labels: salesByProduct.map((item) => item.name),
+                    dataLabels: {
+                        enabled: true,
+                    },
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: (value) => `${Math.round(value || 0)} order`,
+                        },
+                    },
+                    colors: ['#3e60d5', '#47ad77', '#fa5c7c', '#f9bc0b', '#6c757d'],
+                }).render();
+            }
+        });
+    </script>
 @endpush

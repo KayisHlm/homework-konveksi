@@ -3,7 +3,7 @@
 <head>
         <!-- Title Meta -->
         <meta charset="utf-8" />
-        <title>Sales | Reback - Responsive Admin Dashboard Template</title>
+        <title>Homework Konveksi</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
             name="description"
@@ -13,7 +13,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
         <!-- App favicon -->
-        <link rel="shortcut icon" href="{{ asset('build/assets/images/favicon.ico') }}" />
+        <link rel="shortcut icon" href="{{ asset('build/assets/images/homework-konveksi.png') }}" sizes="64x64" type="image/png" />
 
         <!-- Vendor css (Require in all Page) -->
         <link href="{{ asset('build/assets/css/vendor.min.css') }}" rel="stylesheet" type="text/css" />
