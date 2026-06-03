@@ -35,10 +35,7 @@
                                     <span class="badge fs-12 badge-soft-success"
                                         ><i class="ti ti-arrow-badge-up"></i>
                                         {{ $paidInvoiceCount }} invoice lunas</span
-                                    >
-                                    <i
-                                        class="bx bx-doughnut-chart widget-icon"
-                                    ></i>
+                                    >                               
                                 </div>
                                 <!-- end card-body -->
                             </div>
@@ -63,9 +60,6 @@
                                         ><i class="ti ti-clock-hour-4"></i>
                                         {{ $pendingOrderCount }} pending</span
                                     >
-                                    <i
-                                        class="bx bx-bar-chart-alt-2 widget-icon"
-                                    ></i>
                                 </div>
                                 <!-- end card-body -->
                             </div>
@@ -90,9 +84,6 @@
                                         ><i class="ti ti-user-plus"></i>
                                         {{ $newCustomersThisMonth }} baru bulan ini</span
                                     >
-                                    <i
-                                        class="bx bx-building-house widget-icon"
-                                    ></i>
                                 </div>
                                 <!-- end card-body -->
                             </div>
@@ -117,7 +108,6 @@
                                         ><i class="ti ti-file-invoice"></i>
                                         {{ $newInvoicesThisMonth }} dibuat bulan ini</span
                                     >
-                                    <i class="bx bx-bowl-hot widget-icon"></i>
                                 </div>
                                 <!-- end card-body -->
                             </div>
@@ -142,9 +132,6 @@
                                         ><i class="ti ti-alert-circle"></i>
                                         {{ $outstandingInvoiceCount }} invoice tertunda</span
                                     >
-                                    <i
-                                        class="bx bx-cricket-ball widget-icon"
-                                    ></i>
                                 </div>
                                 <!-- end card-body -->
                             </div>

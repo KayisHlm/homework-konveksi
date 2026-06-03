@@ -5,7 +5,7 @@
                                 <script>
                                     document.write(new Date().getFullYear())
                                 </script>
-                                &copy; Reback.
+                                &copy; Homework Konveksi
                             </div>
                         </div>
                     </div>

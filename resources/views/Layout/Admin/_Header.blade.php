@@ -22,7 +22,7 @@
 
                         <div class="d-flex align-items-center gap-1">
                             <!-- Notification -->
-                            <div class="dropdown topbar-item">
+                            {{-- <div class="dropdown topbar-item">
                                 <button
                                     type="button"
                                     class="topbar-button position-relative"
@@ -200,10 +200,10 @@
                                         ></a>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <!-- Activity -->
-                            <div class="topbar-item d-none d-md-flex">
+                            {{-- <div class="topbar-item d-none d-md-flex">
                                 <button
                                     type="button"
                                     class="topbar-button"
@@ -217,7 +217,7 @@
                                         class="fs-24 align-middle"
                                     ></iconify-icon>
                                 </button>
-                            </div>
+                            </div> --}}
 
                             <!-- User -->
                             <div class="dropdown topbar-item">
@@ -230,12 +230,9 @@
                                     aria-expanded="false"
                                 >
                                     <span class="d-flex align-items-center">
-                                        <img
-                                            class="rounded-circle"
-                                            width="32"
-                                            src="{{ asset('build/assets/images/users/avatar-1.jpg') }}"
-                                            alt="avatar-3"
-                                        />
+                                        <i class="bx bx-user-circle fs-24 align-middle me-1">
+
+                                        </i>
                                     </span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">

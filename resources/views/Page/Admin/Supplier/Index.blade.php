@@ -86,14 +86,7 @@
                                         <tbody>
                                             @forelse ($suppliers as $supplier)
                                                 <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center gap-1">
-                                                            <div class="avatar-sm rounded-circle avatar-border me-1 bg-light d-inline-flex align-items-center justify-content-center">
-                                                                <iconify-icon icon="iconamoon:profile-circle-duotone" class="fs-20 text-muted"></iconify-icon>
-                                                            </div>
-                                                            <a href="#!">{{ $supplier->pic_name }}</a>
-                                                        </div>
-                                                    </td>
+                                                    <td>{{ $supplier->pic_name }}</td>
                                                     <td>{{ $supplier->store_name }}</td>
                                                     <td>{{ $supplier->product_category }}</td>
                                                     <td>{{ $supplier->phone }}</td>

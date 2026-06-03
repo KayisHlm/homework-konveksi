@@ -133,8 +133,8 @@
                                                             <tr>
                                                                 <td>{{ $item->product_name }}</td>
                                                                 <td class="text-end">{{ $item->quantity }}</td>
-                                                                <td class="text-end">${{ number_format((float) $item->unit_price, 2) }}</td>
-                                                                <td class="text-end">${{ number_format((float) $item->line_total, 2) }}</td>
+                                                                <td class="text-end">Rp {{ number_format((float) $item->unit_price, 0, ',', '.') }}</td>
+                                                                <td class="text-end">Rp {{ number_format((float) $item->line_total, 0, ',', '.') }}</td>
                                                             </tr>
                                                         @empty
                                                             <tr>
@@ -165,15 +165,15 @@
                                                     <tbody>
                                                         <tr>
                                                             <td class="text-muted">Sub-total</td>
-                                                            <td class="text-end fw-medium">${{ number_format((float) $invoice->subtotal_amount, 2) }}</td>
+                                                            <td class="text-end fw-medium">Rp {{ number_format((float) $invoice->subtotal_amount, 0, ',', '.') }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td class="text-muted">Discount</td>
-                                                            <td class="text-end fw-medium">${{ number_format((float) $invoice->discount_amount, 2) }}</td>
+                                                            <td class="text-end fw-medium">Rp {{ number_format((float) $invoice->discount_amount, 0, ',', '.') }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td class="text-muted">Total</td>
-                                                            <td class="text-end fw-bold fs-16">${{ number_format((float) $invoice->total_amount, 2) }}</td>
+                                                            <td class="text-end fw-bold fs-16">Rp {{ number_format((float) $invoice->total_amount, 0, ',', '.') }}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>

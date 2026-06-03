@@ -86,15 +86,7 @@
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <div
-                                                                class="avatar-xs rounded-circle me-2 bg-light d-inline-flex align-items-center justify-content-center"
-                                                            >
-                                                                <iconify-icon
-                                                                    icon="iconamoon:profile-circle-duotone"
-                                                                    class="fs-18 text-muted"
-                                                                ></iconify-icon>
-                                                            </div>
+                                                        <div class="d-flex align-items-center">                                                    
                                                             <div>
                                                                 <h5 class="fs-14 mt-1 fw-normal mb-0">
                                                                     {{ $invoice->customer?->name ?? '-' }}
@@ -110,7 +102,7 @@
                                                         @endif
                                                     </td>
                                                     <td>{{ $invoice->due_date?->format('d M, Y') ?? '-' }}</td>
-                                                    <td>${{ number_format((float) $invoice->total_amount, 2) }}</td>
+                                                    <td>Rp {{ number_format((float) $invoice->total_amount, 0, ',', '.') }}</td>
                                                     <td>
                                                         <span class="badge {{ $badgeClass }}">{{ ucfirst((string) $status) }}</span>
                                                     </td>

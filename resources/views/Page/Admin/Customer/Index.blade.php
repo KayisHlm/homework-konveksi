@@ -83,14 +83,7 @@
                                         <tbody>
                                             @forelse($customers as $customer)
                                                 <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center gap-1">
-                                                            <div class="avatar-sm rounded-circle avatar-border me-1 bg-light d-inline-flex align-items-center justify-content-center">
-                                                                <iconify-icon icon="iconamoon:profile-circle-duotone" class="fs-20 text-muted"></iconify-icon>
-                                                            </div>
-                                                            <a href="#!">{{ $customer->name }}</a>
-                                                        </div>
-                                                    </td>
+                                                    <td>{{ $customer->name }}</td>
                                                     <td>{{ $customer->institute }}</td>
                                                     <td>{{ $customer->phone }}</td>
                                                     <td>{{ $customer->address }}</td>
