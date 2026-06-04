@@ -186,15 +186,10 @@
                                     <div class="mt-5 mb-1">
                                         <div class="text-end d-print-none">
                                             <a
-                                                href="javascript:window.print()"
+                                                href="#"
                                                 class="btn btn-primary"
                                                 >Print</a
-                                            >
-                                            <a
-                                                href="javascript:void(0);"
-                                                class="btn btn-outline-primary"
-                                                >Submit</a
-                                            >
+                                            >                                            
                                         </div>
                                     </div>
                                 </div>

@@ -24,10 +24,7 @@
                                 <div
                                     class="card-body overflow-hidden position-relative"
                                 >
-                                    <iconify-icon
-                                        icon="iconamoon:shopping-card-add-duotone"
-                                        class="fs-36 text-info"
-                                    ></iconify-icon>
+                                    <i class="bx bx-wallet fs-36 text-info"></i>
                                     <h3 class="mb-0 fw-bold mt-3 mb-1">
                                         Rp {{ number_format((float) $totalSalesPaid, 0, ',', '.') }}
                                     </h3>
@@ -48,10 +45,7 @@
                                 <div
                                     class="card-body overflow-hidden position-relative"
                                 >
-                                    <iconify-icon
-                                        icon="iconamoon:link-external-duotone"
-                                        class="fs-36 text-success"
-                                    ></iconify-icon>
+                                    <i class="bx bx-cart fs-36 text-success"></i>
                                     <h3 class="mb-0 fw-bold mt-3 mb-1">
                                         {{ $totalOrders }}
                                     </h3>
@@ -72,10 +66,7 @@
                                 <div
                                     class="card-body overflow-hidden position-relative"
                                 >
-                                    <iconify-icon
-                                        icon="iconamoon:store-duotone"
-                                        class="fs-36 text-purple"
-                                    ></iconify-icon>
+                                    <i class="bx bx-user-circle fs-36 text-purple"></i>
                                     <h3 class="mb-0 fw-bold mt-3 mb-1">
                                         {{ $totalCustomers }}
                                     </h3>
@@ -96,10 +87,7 @@
                                 <div
                                     class="card-body overflow-hidden position-relative"
                                 >
-                                    <iconify-icon
-                                        icon="iconamoon:gift-duotone"
-                                        class="fs-36 text-orange"
-                                    ></iconify-icon>
+                                    <i class="bx bx-list-check fs-36 text-orange"></i>
                                     <h3 class="mb-0 fw-bold mt-3 mb-1">
                                         {{ $totalInvoices }}
                                     </h3>
@@ -120,10 +108,7 @@
                                 <div
                                     class="card-body overflow-hidden position-relative"
                                 >
-                                    <iconify-icon
-                                        icon="iconamoon:certificate-badge-duotone"
-                                        class="fs-36 text-warning"
-                                    ></iconify-icon>
+                                    <i class="bx bx-info-circle fs-36 text-warning"></i>
                                     <h3 class="mb-0 fw-bold mt-3 mb-1">
                                         Rp {{ number_format((float) $totalOutstanding, 0, ',', '.') }}
                                     </h3>
