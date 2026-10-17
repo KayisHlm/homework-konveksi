@@ -11,6 +11,7 @@ class Invoice extends Model
     protected $fillable = [
         'invoice_number',
         'customer_id',
+        'order_id',
         'issued_at',
         'due_date',
         'payment_status',
@@ -36,9 +37,13 @@ class Invoice extends Model
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+    public function order()
+    {
+        return $this->belongsTo(Orders::class, 'order_id');
+    }
+
     public function items()
     {
         return $this->hasMany(InvoiceItem::class, 'invoice_id');
     }
 }
-

@@ -58,6 +58,24 @@
                         </li>     
 
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('procurement') }}">
+                                <span class="nav-icon">
+                                    <iconify-icon icon="iconamoon:delivery-fast-duotone"></iconify-icon>
+                                </span>
+                                <span class="nav-text"> Procurements </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('expense') }}">
+                                <span class="nav-icon">
+                                    <i class="bx bx-wallet-alt"></i>
+                                </span>
+                                <span class="nav-text"> Expenses </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('customer') }}">
                                 <span class="nav-icon">
                                     <iconify-icon
@@ -81,17 +99,6 @@
                         </li>                          
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('contact') }}">
-                                <span class="nav-icon">
-                                    <iconify-icon
-                                        icon="iconamoon:profile-circle-duotone"
-                                    ></iconify-icon>
-                                </span>
-                                <span class="nav-text"> Contacts </span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('invoice') }}">
                                 <span class="nav-icon">
                                     <iconify-icon
@@ -105,12 +112,11 @@
                 </div>
 
                 <div class="p-3 border-top">
-                    <button
-                        type="button"
-                        class="btn btn-danger w-100 rounded-pill"
-                        id="logout-swal"
-                    >
-                        Logout
-                    </button>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-danger w-100 rounded-pill">
+                            Logout
+                        </button>
+                    </form>
                 </div>
             </div>

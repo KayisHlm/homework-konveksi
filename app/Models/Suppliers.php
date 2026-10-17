@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Suppliers extends Model
 {
-    //
     protected $table = 'suppliers';
+
     protected $fillable = [
         'pic_name',
         'store_name',
@@ -15,4 +15,9 @@ class Suppliers extends Model
         'phone',
         'address',
     ];
+
+    public function procurements()
+    {
+        return $this->hasMany(Procurement::class, 'supplier_id');
+    }
 }

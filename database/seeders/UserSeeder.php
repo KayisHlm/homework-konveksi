@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'Andi Prasetyo',
-                'email' => 'andi.prasetyo@homework-konveksi.test',
+                'email' => 'owner@homeworkkonveksi',
                 'role' => 'Owner',
                 'whatsapp' => '6281210011001',
                 'password' => 'password123',

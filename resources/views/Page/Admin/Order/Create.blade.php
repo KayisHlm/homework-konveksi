@@ -1,301 +1,235 @@
 @extends('Layout.Admin._Layout')
 @section('Content')
-    <div class="page-content">
-        <div class="container-xxl">
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <h4 class="mb-0 fw-semibold">Create Order</h4>
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item">
-                                <a href="javascript: void(0);">Order</a>
-                            </li>
-                            <li class="breadcrumb-item active">Create</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Order Information</h5>
-                        </div>
-                        <div class="card-body">
-                            <form method="POST" action="{{ route('order.store') }}" class="row g-3" id="order-form">
-                                @csrf
-                                <div class="col-12">
-                                    <label class="form-label">Customer</label>
-                                    <div class="position-relative">
-                                        <input type="hidden" name="customer_id" id="customer_id" value="{{ old('customer_id') }}" />
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="customer_search"
-                                            placeholder="Ketik nama customer..."
-                                            autocomplete="off"
-                                        />
-                                        <div
-                                            id="customer_suggestions"
-                                            class="dropdown-menu w-100"
-                                            style="max-height: 260px; overflow: auto;"
-                                        ></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <label class="form-label">Product Name</label>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        name="product_name"
-                                        value="{{ old('product_name') }}"
-                                        placeholder="e.g. Konveksi Seragam"
-                                        required
-                                    />
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Payment Type</label>
-                                    <select class="form-select" name="payment_type" required>
-                                        @foreach ($paymentTypes as $type)
-                                            <option value="{{ $type }}" @selected(old('payment_type', 'cash') === $type)>
-                                                {{ ucfirst($type) }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Payment Status</label>
-                                    <select class="form-select" name="payment_status" required>
-                                        @foreach ($paymentStatuses as $status)
-                                            <option value="{{ $status }}" @selected(old('payment_status', 'pending') === $status)>
-                                                {{ ucfirst($status) }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="col-12">
-                                    <hr class="my-1" />
-                                </div>
-
-                                <div class="col-12">
-                                    <label class="form-label">Institute</label>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        name="institute"
-                                        id="institute"
-                                        value="{{ old('institute') }}"
-                                        placeholder="e.g. PT / CV / Sekolah"
-                                    />
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Name</label>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        name="name"
-                                        id="name"
-                                        value="{{ old('name') }}"
-                                        required
-                                    />
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Email</label>
-                                    <input
-                                        type="email"
-                                        class="form-control"
-                                        name="email"
-                                        id="email"
-                                        value="{{ old('email') }}"
-                                        required
-                                    />
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Phone</label>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        name="phone"
-                                        id="phone"
-                                        value="{{ old('phone') }}"
-                                        required
-                                    />
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Address</label>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        name="address"
-                                        id="address"
-                                        value="{{ old('address') }}"
-                                        required
-                                    />
-                                </div>
-
-                                <div class="col-12 d-flex justify-content-end gap-2">
-                                    <a href="{{ route('order') }}" class="btn btn-outline-secondary">Back</a>
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bx bx-save me-1"></i>Save Order
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Tips</h5>
-                        </div>
-                        <div class="card-body text-muted">
-                            <div class="d-flex align-items-start gap-2 mb-2">
-                                <i class="bx bx-info-circle fs-20"></i>
-                                <div>
-                                    Pilih customer untuk mengisi otomatis name/email/phone/address, lalu tetap bisa diubah.
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-start gap-2">
-                                <i class="bx bx-list-check fs-20"></i>
-                                <div>Payment type & status mengikuti enum pada tabel orders.</div>
-                            </div>
-                        </div>
-                    </div>
+<div class="page-content">
+    <div class="container-xxl">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h4 class="mb-0 fw-semibold">Create Order</h4>
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="{{ route('order') }}">Orders</a></li>
+                        <li class="breadcrumb-item active">Create</li>
+                    </ol>
                 </div>
             </div>
         </div>
 
+        <form method="POST" action="{{ route('order.store') }}" class="row g-3" id="order-form">
+            @csrf
+
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header"><h5 class="card-title mb-0">Detail Pesanan</h5></div>
+                    <div class="card-body row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Customer</label>
+                            <div class="position-relative">
+                                <input type="hidden" name="customer_id" id="customer_id" value="{{ old('customer_id') }}" />
+                                <input type="text" class="form-control" id="customer_search" placeholder="Ketik nama customer..." autocomplete="off" />
+                                <div id="customer_suggestions" class="dropdown-menu w-100" style="max-height: 260px; overflow: auto;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Produk</label>
+                            <input type="text" name="product_name" class="form-control @error('product_name') is-invalid @enderror" value="{{ old('product_name') }}" required />
+                            @error('product_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Bahan</label>
+                            <input type="text" name="material" class="form-control @error('material') is-invalid @enderror" value="{{ old('material') }}" required />
+                            @error('material')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Qty</label>
+                            <input type="number" min="1" name="quantity" id="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity', 1) }}" required />
+                            @error('quantity')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Harga Satuan</label>
+                            <input type="number" min="0" step="0.01" name="unit_price" id="unit_price" class="form-control @error('unit_price') is-invalid @enderror" value="{{ old('unit_price', 0) }}" required />
+                            @error('unit_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Uang Muka</label>
+                            <input type="number" min="0" step="0.01" name="down_payment" id="down_payment" class="form-control @error('down_payment') is-invalid @enderror" value="{{ old('down_payment', 0) }}" />
+                            @error('down_payment')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Tanggal Jadi</label>
+                            <input type="date" name="due_date" class="form-control @error('due_date') is-invalid @enderror" value="{{ old('due_date') }}" />
+                            @error('due_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Status Produksi</label>
+                            <select name="production_status" class="form-select @error('production_status') is-invalid @enderror">
+                                @foreach ($productionStatuses as $status)
+                                    <option value="{{ $status }}" @selected(old('production_status', 'pesanan_diterima') === $status)>{{ ucwords(str_replace('_', ' ', $status)) }}</option>
+                                @endforeach
+                            </select>
+                            @error('production_status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Tipe Pembayaran</label>
+                            <select name="payment_type" class="form-select @error('payment_type') is-invalid @enderror">
+                                @foreach ($paymentTypes as $type)
+                                    <option value="{{ $type }}" @selected(old('payment_type', 'cash') === $type)>{{ ucfirst($type) }}</option>
+                                @endforeach
+                            </select>
+                            @error('payment_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Status Pembayaran</label>
+                            <select name="payment_status" class="form-select @error('payment_status') is-invalid @enderror">
+                                @foreach ($paymentStatuses as $status)
+                                    <option value="{{ $status }}" @selected(old('payment_status', 'pending') === $status)>{{ ucfirst($status) }}</option>
+                                @endforeach
+                            </select>
+                            @error('payment_status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Rincian Ukuran</label>
+                            <textarea name="size_details" class="form-control @error('size_details') is-invalid @enderror" rows="3">{{ old('size_details') }}</textarea>
+                            @error('size_details')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Catatan</label>
+                            <textarea name="notes" class="form-control @error('notes') is-invalid @enderror" rows="3">{{ old('notes') }}</textarea>
+                            @error('notes')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h5 class="card-title mb-0">Data Customer</h5></div>
+                    <div class="card-body row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nama</label>
+                            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required />
+                            @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Instansi</label>
+                            <input type="text" name="institute" id="institute" class="form-control @error('institute') is-invalid @enderror" value="{{ old('institute') }}" required />
+                            @error('institute')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required />
+                            @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Telepon</label>
+                            <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" required />
+                            @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Alamat</label>
+                            <textarea name="address" id="address" class="form-control @error('address') is-invalid @enderror" rows="2" required>{{ old('address') }}</textarea>
+                            @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header"><h5 class="card-title mb-0">Ringkasan Harga</h5></div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2"><span>Total</span><strong id="total_price_preview">Rp 0</strong></div>
+                        <div class="d-flex justify-content-between mb-2"><span>Uang Muka</span><strong id="down_payment_preview">Rp 0</strong></div>
+                        <div class="d-flex justify-content-between border-top pt-2"><span>Sisa Tagihan</span><strong id="remaining_balance_preview">Rp 0</strong></div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{{ route('order') }}" class="btn btn-outline-secondary">Batal</a>
+                    <button type="submit" class="btn btn-primary">Simpan Pesanan</button>
+                </div>
+            </div>
+        </form>
     </div>
+</div>
 
-    @push('scripts')
-        <script>
-            (function () {
-                const customers = @json($customersForJs)
+@push('scripts')
+<script>
+    (function () {
+        const customers = @json($customersForJs)
+        const customerIdInput = document.getElementById('customer_id')
+        const customerSearchInput = document.getElementById('customer_search')
+        const suggestions = document.getElementById('customer_suggestions')
+        const quantityInput = document.getElementById('quantity')
+        const unitPriceInput = document.getElementById('unit_price')
+        const downPaymentInput = document.getElementById('down_payment')
+        if (!customerIdInput || !customerSearchInput || !suggestions) return
 
-                const customerIdInput = document.getElementById('customer_id')
-                const customerSearchInput = document.getElementById('customer_search')
-                const suggestions = document.getElementById('customer_suggestions')
-                if (!customerSearchInput || !suggestions || !customerIdInput) return
+        const fields = {
+            name: document.getElementById('name'),
+            email: document.getElementById('email'),
+            phone: document.getElementById('phone'),
+            address: document.getElementById('address'),
+            institute: document.getElementById('institute'),
+        }
 
-                const nameInput = document.getElementById('name')
-                const emailInput = document.getElementById('email')
-                const phoneInput = document.getElementById('phone')
-                const addressInput = document.getElementById('address')
-                const instituteInput = document.getElementById('institute')
+        function setCustomer(customer) {
+            customerIdInput.value = customer?.id ? String(customer.id) : ''
+            customerSearchInput.value = customer?.name || ''
+            Object.keys(fields).forEach((key) => {
+                if (fields[key]) fields[key].value = customer?.[key] || ''
+            })
+            suggestions.classList.remove('show')
+        }
 
-                function openSuggestions() {
-                    suggestions.classList.add('show')
-                }
+        function renderSuggestions() {
+            const q = customerSearchInput.value.trim().toLowerCase()
+            suggestions.innerHTML = ''
+            if (!q) return
 
-                function closeSuggestions() {
-                    suggestions.classList.remove('show')
-                }
+            customers.filter((customer) => customer.name.toLowerCase().includes(q)).slice(0, 7).forEach((customer) => {
+                const button = document.createElement('button')
+                button.type = 'button'
+                button.className = 'dropdown-item'
+                button.textContent = `${customer.name} - ${customer.email}`
+                button.addEventListener('click', () => setCustomer(customer))
+                suggestions.appendChild(button)
+            })
 
-                function setCustomer(customer) {
-                    customerIdInput.value = customer?.id ? String(customer.id) : ''
-                    customerSearchInput.value = customer?.name || customerSearchInput.value
+            if (suggestions.childElementCount > 0) {
+                suggestions.classList.add('show')
+            } else {
+                suggestions.classList.remove('show')
+            }
+        }
 
-                    if (nameInput) nameInput.value = customer?.name || nameInput.value
-                    if (emailInput) emailInput.value = customer?.email || emailInput.value
-                    if (phoneInput) phoneInput.value = customer?.phone || phoneInput.value
-                    if (addressInput) addressInput.value = customer?.address || addressInput.value
-                    if (instituteInput) instituteInput.value = customer?.institute || instituteInput.value
-                }
+        function formatRupiah(value) {
+            return `Rp ${Number(value || 0).toLocaleString('id-ID')}`
+        }
 
-                function renderSuggestions(list) {
-                    suggestions.innerHTML = ''
-                    if (!list.length) {
-                        closeSuggestions()
-                        return
-                    }
+        function renderTotals() {
+            const quantity = Number(quantityInput?.value || 0)
+            const price = Number(unitPriceInput?.value || 0)
+            const downPayment = Number(downPaymentInput?.value || 0)
+            const total = quantity * price
+            const remaining = Math.max(0, total - downPayment)
+            document.getElementById('total_price_preview').textContent = formatRupiah(total)
+            document.getElementById('down_payment_preview').textContent = formatRupiah(downPayment)
+            document.getElementById('remaining_balance_preview').textContent = formatRupiah(remaining)
+        }
 
-                    list.forEach((customer) => {
-                        const button = document.createElement('button')
-                        button.type = 'button'
-                        button.className = 'dropdown-item'
-                        button.textContent = `${customer.name} — ${customer.email}`
-                        button.addEventListener('click', () => {
-                            setCustomer(customer)
-                            closeSuggestions()
-                        })
-                        suggestions.appendChild(button)
-                    })
-                    openSuggestions()
-                }
+        customerSearchInput.addEventListener('input', renderSuggestions)
+        customerSearchInput.addEventListener('focus', renderSuggestions)
+        document.addEventListener('click', (event) => {
+            if (event.target === customerSearchInput || suggestions.contains(event.target)) return
+            suggestions.classList.remove('show')
+        })
 
-                function syncInputValueToSelection() {
-                    const inputValue = customerSearchInput.value.trim().toLowerCase()
-                    const selectedId = customerIdInput.value ? Number(customerIdInput.value) : null
-                    if (selectedId) {
-                        const selected = customers.find((c) => c.id === selectedId)
-                        if (!selected || selected.name.toLowerCase() !== inputValue) {
-                            customerIdInput.value = ''
-                        }
-                    }
-                }
-
-                function onSearch() {
-                    syncInputValueToSelection()
-
-                    const q = customerSearchInput.value.trim().toLowerCase()
-                    if (!q) {
-                        closeSuggestions()
-                        return
-                    }
-
-                    if (nameInput && !nameInput.value) {
-                        nameInput.value = customerSearchInput.value
-                    }
-
-                    const matches = customers
-                        .filter((c) => c.name.toLowerCase().includes(q))
-                        .slice(0, 7)
-
-                    renderSuggestions(matches)
-                }
-
-                customerSearchInput.addEventListener('input', onSearch)
-                customerSearchInput.addEventListener('focus', onSearch)
-
-                document.addEventListener('click', (event) => {
-                    if (event.target === customerSearchInput || suggestions.contains(event.target)) return
-                    closeSuggestions()
-                })
-
-                if (customerIdInput.value) {
-                    const selectedId = Number(customerIdInput.value)
-                    const selected = customers.find((c) => c.id === selectedId)
-                    if (selected) {
-                        customerSearchInput.value = selected.name
-                        setCustomer(selected)
-                    }
-                }
-
-                const form = document.getElementById('order-form')
-                if (form) {
-                    form.addEventListener('submit', () => {
-                        if (customerIdInput.value) return
-
-                        const q = customerSearchInput.value.trim().toLowerCase()
-                        if (!q) return
-
-                        const exact = customers.find((c) => c.name.toLowerCase() === q)
-                        if (!exact) return
-
-                        setCustomer(exact)
-                    })
-                }
-            })()
-        </script>
-    @endpush
+        ;[quantityInput, unitPriceInput, downPaymentInput].forEach((input) => input?.addEventListener('input', renderTotals))
+        renderTotals()
+    })()
+</script>
+@endpush
 @endsection

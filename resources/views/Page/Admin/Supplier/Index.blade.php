@@ -68,36 +68,36 @@
                     <!-- end card -->
 
                     <div class="card overflow-hidden">
-                                <div
-                                    class="table-responsive table-centered text-nowrap"
-                                >
+                                <div class="table-responsive table-centered">
                                     <table class="table mb-0">
                                         <thead>
                                             <tr>
-                                                <th>PIC Name</th>
-                                                <th>Store Name</th>
-                                                <th>Product Category</th>
-                                                <th>Phone Number</th>
-                                                <th>Address</th>
-                                                <th>Action</th>
+                                                <th style="width: 16%;">PIC Name</th>
+                                                <th style="width: 18%;">Store Name</th>
+                                                <th style="width: 18%;">Product Category</th>
+                                                <th style="width: 14%;">Phone Number</th>
+                                                <th style="width: 26%;">Address</th>
+                                                <th class="text-center" style="width: 8%;">Action</th>
                                             </tr>
                                         </thead>
                                         <!-- end thead-->
                                         <tbody>
                                             @forelse ($suppliers as $supplier)
                                                 <tr>
-                                                    <td>{{ $supplier->pic_name }}</td>
-                                                    <td>{{ $supplier->store_name }}</td>
-                                                    <td>{{ $supplier->product_category }}</td>
-                                                    <td>{{ $supplier->phone }}</td>
-                                                    <td>{{ $supplier->address }}</td>
-                                                    <td>
-                                                        <a href="{{ route('supplier.edit', $supplier) }}" class="btn btn-sm btn-soft-primary me-1">
-                                                            <i class="bx bx-edit fs-18"></i>
-                                                        </a>
-                                                        <button type="button" class="btn btn-sm btn-soft-danger" disabled>
-                                                            <i class="bx bx-trash fs-18"></i>
-                                                        </button>
+                                                    <td class="text-wrap">{{ $supplier->pic_name }}</td>
+                                                    <td class="text-wrap">{{ $supplier->store_name }}</td>
+                                                    <td class="text-wrap">{{ $supplier->product_category }}</td>
+                                                    <td class="text-nowrap">{{ $supplier->phone }}</td>
+                                                    <td class="text-wrap">{{ $supplier->address }}</td>
+                                                    <td class="text-center">
+                                                        <div class="d-inline-flex align-items-center gap-1">
+                                                            <a href="{{ route('supplier.edit', $supplier) }}" class="btn btn-sm btn-soft-primary">
+                                                                <i class="bx bx-edit fs-18"></i>
+                                                            </a>
+                                                            <button type="button" class="btn btn-sm btn-soft-danger" disabled>
+                                                                <i class="bx bx-trash fs-18"></i>
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             @empty
