@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Orders;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,7 +16,7 @@ use Tests\TestCase;
 */
 
 pest()->extend(TestCase::class)
- // ->use(RefreshDatabase::class)
+    ->use(RefreshDatabase::class)
     ->in('Feature');
 
 /*
@@ -47,4 +48,18 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/** Buat pesanan berisi satu produk dengan rincian ukuran, lalu hitung ulang totalnya. */
+function orderWithProduct(int $customerId, array $sizes, float $unitPrice, string $product = 'Kaos'): Orders
+{
+    $order = Orders::create(['customer_id' => $customerId]);
+    $item = $order->items()->create(['product_name' => $product, 'material' => 'Cotton', 'color' => 'Hitam', 'unit_price' => $unitPrice]);
+    foreach ($sizes as $size => $quantity) {
+        $item->sizes()->create(['size' => $size, 'quantity' => $quantity]);
+    }
+    $item->recalculate();
+    $order->recalculateTotal();
+
+    return $order;
 }

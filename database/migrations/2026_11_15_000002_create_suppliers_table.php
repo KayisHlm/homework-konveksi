@@ -8,19 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('institute');
-            $table->string('phone');
-            $table->string('address');
+            $table->string('pic_name');
+            $table->string('store_name');
+            $table->string('product_category');
+            $table->string('phone', 50);
+            $table->text('address');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('suppliers');
     }
 };

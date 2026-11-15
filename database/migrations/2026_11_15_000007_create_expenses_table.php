@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->nullable()->constrained('orders')->nullOnDelete();
-            $table->foreignId('procurement_id')->nullable()->constrained('procurements')->cascadeOnDelete();
-            $table->string('category');
+            $table->foreignId('order_id')->nullable()->constrained('orders')->cascadeOnDelete();
+            $table->foreignId('procurement_id')->nullable()->unique()->constrained('procurements')->cascadeOnDelete();
+            $table->string('category', 30)->index();
             $table->string('description');
             $table->decimal('amount', 12, 2);
             $table->date('spent_at');

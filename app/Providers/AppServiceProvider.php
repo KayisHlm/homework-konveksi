@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Support\Status;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
@@ -13,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        
+        AliasLoader::getInstance()->alias('Status', Status::class);
     }
 
     /**
