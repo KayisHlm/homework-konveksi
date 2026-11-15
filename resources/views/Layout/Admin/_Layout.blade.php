@@ -44,6 +44,19 @@
     <script src="{{ asset('build/assets/js/vendor.js') }}"></script>
     <script src="{{ asset('build/assets/js/app.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (session('success') || session('error'))
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                timer: 4000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                icon: @json(session('error') ? 'error' : 'success'),
+                title: @json(session('error') ?? session('success')),
+            })
+        </script>
+    @endif
     @stack('scripts')
 </body>
 </html>

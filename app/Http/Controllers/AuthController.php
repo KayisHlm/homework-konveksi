@@ -12,7 +12,7 @@ class AuthController extends Controller
     public function showLogin(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect(Auth::user()->homeRoute());
         }
 
         return view('Page.sign-in');
@@ -25,7 +25,7 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()
                 ->withErrors(['email' => 'Email atau password tidak sesuai.'])
                 ->onlyInput('email');
@@ -33,7 +33,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended($request->user()->homeRoute());
     }
 
     public function logout(Request $request): RedirectResponse

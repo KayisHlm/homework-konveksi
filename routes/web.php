@@ -9,12 +9,13 @@ use App\Http\Controllers\InvoiceDetailController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProcurementController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => auth()->check()
-    ? redirect()->route('dashboard')
+    ? redirect(auth()->user()->homeRoute())
     : redirect()->route('login'));
 
 Route::middleware('guest')->group(function () {
@@ -26,15 +27,27 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Khusus pemilik: dashboard & rekap (SRS-HK-003), pengeluaran (SRS-HK-012), tim (SRS-HK-016).
+    Route::middleware('role:pemilik')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/report', [ReportController::class, 'index'])->name('report');
 
-    Route::get('/team', [TeamController::class, 'index'])->name('team');
-    Route::get('/team/create', [TeamController::class, 'create'])->name('team.create');
-    Route::post('/team', [TeamController::class, 'store'])->name('team.store');
-    Route::get('/team/{user}/edit', [TeamController::class, 'edit'])->name('team.edit');
-    Route::put('/team/{user}', [TeamController::class, 'update'])->name('team.update');
-    Route::delete('/team/{user}', [TeamController::class, 'destroy'])->name('team.destroy');
+        Route::get('/team', [TeamController::class, 'index'])->name('team');
+        Route::get('/team/create', [TeamController::class, 'create'])->name('team.create');
+        Route::post('/team', [TeamController::class, 'store'])->name('team.store');
+        Route::get('/team/{user}/edit', [TeamController::class, 'edit'])->name('team.edit');
+        Route::put('/team/{user}', [TeamController::class, 'update'])->name('team.update');
+        Route::delete('/team/{user}', [TeamController::class, 'destroy'])->name('team.destroy');
 
+        Route::get('/expense', [ExpenseController::class, 'index'])->name('expense');
+        Route::get('/expense/create', [ExpenseController::class, 'create'])->name('expense.create');
+        Route::post('/expense', [ExpenseController::class, 'store'])->name('expense.store');
+        Route::get('/expense/{expense}/edit', [ExpenseController::class, 'edit'])->name('expense.edit');
+        Route::put('/expense/{expense}', [ExpenseController::class, 'update'])->name('expense.update');
+        Route::delete('/expense/{expense}', [ExpenseController::class, 'destroy'])->name('expense.destroy');
+    });
+
+    // Pemilik & admin: data operasional.
     Route::get('/order', [OrderController::class, 'index'])->name('order');
     Route::get('/order/create', [OrderController::class, 'create'])->name('order.create');
     Route::post('/order', [OrderController::class, 'store'])->name('order.store');
@@ -51,13 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/procurement/{procurement}', [ProcurementController::class, 'update'])->name('procurement.update');
     Route::delete('/procurement/{procurement}', [ProcurementController::class, 'destroy'])->name('procurement.destroy');
     Route::patch('/procurement/{procurement}/receive', [ProcurementController::class, 'receive'])->name('procurement.receive');
-
-    Route::get('/expense', [ExpenseController::class, 'index'])->name('expense');
-    Route::get('/expense/create', [ExpenseController::class, 'create'])->name('expense.create');
-    Route::post('/expense', [ExpenseController::class, 'store'])->name('expense.store');
-    Route::get('/expense/{expense}/edit', [ExpenseController::class, 'edit'])->name('expense.edit');
-    Route::put('/expense/{expense}', [ExpenseController::class, 'update'])->name('expense.update');
-    Route::delete('/expense/{expense}', [ExpenseController::class, 'destroy'])->name('expense.destroy');
+    Route::patch('/procurement/{procurement}/cancel', [ProcurementController::class, 'cancel'])->name('procurement.cancel');
 
     Route::get('/invoice', [InvoiceController::class, 'index'])->name('invoice');
     Route::get('/invoice/create', [InvoiceController::class, 'create'])->name('invoice.create');

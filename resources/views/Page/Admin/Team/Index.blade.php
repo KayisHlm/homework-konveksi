@@ -37,7 +37,7 @@
                             <th>Nama</th>
                             <th>Email</th>
                             <th>WhatsApp</th>
-                            <th>Jabatan</th>
+                            <th>Peran</th>
                             <th class="text-end">Aksi</th>
                         </tr>
                     </thead>
@@ -47,7 +47,7 @@
                                 <td>{{ $member['name'] }}</td>
                                 <td>{{ $member['email'] }}</td>
                                 <td>{{ $member['whatsapp'] }}</td>
-                                <td>{{ $member['role'] }}</td>
+                                <td><span class="badge badge-soft-{{ $member['role'] === 'pemilik' ? 'primary' : 'secondary' }}">{{ Status::label($member['role']) }}</span></td>
                                 <td class="text-end">
                                     <a href="{{ route('team.edit', $member['id']) }}" class="btn btn-sm btn-soft-primary me-1">
                                         <i class="bx bx-edit"></i>

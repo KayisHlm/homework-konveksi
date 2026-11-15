@@ -31,8 +31,12 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label" for="role">Jabatan</label>
-                                <input type="text" id="role" name="role" class="form-control @error('role') is-invalid @enderror" value="{{ old('role', 'admin') }}" />
+                                <label class="form-label" for="role">Peran</label>
+                                <select id="role" name="role" class="form-select @error('role') is-invalid @enderror">
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role }}" @selected(old('role', $member->role) === $role)>{{ Status::label($role) }}</option>
+                                    @endforeach
+                                </select>
                                 @error('role')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
 
@@ -69,7 +73,7 @@
                         <h5 class="card-title mb-0">Catatan</h5>
                     </div>
                     <div class="card-body text-muted">
-                        Semua anggota tim dapat login sebagai admin. Kolom jabatan disimpan di field <code>role</code> sebagai keterangan.
+                        <strong>Pemilik</strong> dapat mengakses dashboard, pengeluaran, tim, dan laba per pesanan. <strong>Admin</strong> hanya mengelola pelanggan, pemasok, pesanan, pengadaan, dan invoice.
                     </div>
                 </div>
             </div>

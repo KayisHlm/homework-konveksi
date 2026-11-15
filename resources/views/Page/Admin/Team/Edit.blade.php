@@ -32,8 +32,12 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label" for="role">Jabatan</label>
-                                <input type="text" id="role" name="role" class="form-control @error('role') is-invalid @enderror" value="{{ old('role', $member->role) }}" />
+                                <label class="form-label" for="role">Peran</label>
+                                <select id="role" name="role" class="form-select @error('role') is-invalid @enderror">
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role }}" @selected(old('role', $member->role) === $role)>{{ Status::label($role) }}</option>
+                                    @endforeach
+                                </select>
                                 @error('role')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
 

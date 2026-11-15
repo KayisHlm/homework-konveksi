@@ -33,7 +33,7 @@ class TeamController extends Controller
                 'id' => (int) $member->getAttribute('id'),
                 'name' => (string) $member->getAttribute('name'),
                 'email' => (string) $member->getAttribute('email'),
-                'role' => (string) ($member->getAttribute('role') ?: 'admin'),
+                'role' => (string) $member->getAttribute('role'),
                 'whatsapp' => (string) ($member->getAttribute('whatsapp') ?: '-'),
             ]);
 
@@ -43,7 +43,8 @@ class TeamController extends Controller
     public function create(): View
     {
         return view('Page.Admin.Team.Create', [
-            'member' => new User(),
+            'member' => new User(['role' => User::ROLE_ADMIN]),
+            'roles' => User::roles(),
         ]);
     }
 
@@ -56,7 +57,7 @@ class TeamController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'whatsapp' => $validated['whatsapp'] ?? null,
-            'role' => $validated['role'] ?? 'admin',
+            'role' => $validated['role'],
         ]);
 
         return redirect()->route('team')->with('success', 'Anggota tim berhasil ditambahkan.');
@@ -66,6 +67,7 @@ class TeamController extends Controller
     {
         return view('Page.Admin.Team.Edit', [
             'member' => $user,
+            'roles' => User::roles(),
         ]);
     }
 
@@ -73,14 +75,18 @@ class TeamController extends Controller
     {
         $validated = $this->validateMember($request, $user);
 
+        if ($user->is($request->user()) && $validated['role'] !== User::ROLE_PEMILIK) {
+            return back()->withInput()->with('error', 'Anda tidak dapat menurunkan peran akun Anda sendiri.');
+        }
+
         $payload = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'whatsapp' => $validated['whatsapp'] ?? null,
-            'role' => $validated['role'] ?? 'admin',
+            'role' => $validated['role'],
         ];
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $payload['password'] = Hash::make($validated['password']);
         }
 
@@ -89,8 +95,12 @@ class TeamController extends Controller
         return redirect()->route('team')->with('success', 'Data anggota tim berhasil diperbarui.');
     }
 
-    public function destroy(User $user): RedirectResponse
+    public function destroy(Request $request, User $user): RedirectResponse
     {
+        if ($user->is($request->user())) {
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
         $user->delete();
 
         return redirect()->route('team')->with('success', 'Anggota tim berhasil dihapus.');
@@ -107,7 +117,7 @@ class TeamController extends Controller
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user?->id)],
             'password' => $passwordRules,
             'whatsapp' => ['nullable', 'string', 'max:30'],
-            'role' => ['nullable', 'string', 'max:255'],
+            'role' => ['required', Rule::in(User::roles())],
         ]);
     }
 }
