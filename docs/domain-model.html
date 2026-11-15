@@ -1,0 +1,185 @@
+<title>Domain Model Homework Konveksi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: satu kolom dokumen teknis; diagram lebar penuh, lalu tabel perubahan, relasi, dan aturan. */
+  :root {
+    --bg: #f7f7fb;
+    --surface: #ffffff;
+    --fg: #1d1f2b;
+    --muted: #5d6075;
+    --line: #dcdde8;
+    --accent: #3d4fd6;
+    --accent-soft: #e8eafc;
+    --add: #1f7a4d;
+    --add-soft: #e3f4ea;
+    --del: #b3363c;
+    --del-soft: #fbe6e7;
+    --chg: #8a5a00;
+    --chg-soft: #fbf0d9;
+    --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12131a; --surface: #1b1d27; --fg: #e7e8f0; --muted: #9a9db3; --line: #2e3142;
+      --accent: #8e9bff; --accent-soft: #252a4d; --add: #6fd39f; --add-soft: #173326;
+      --del: #f08a8f; --del-soft: #3a1d20; --chg: #e8bd5c; --chg-soft: #382c12; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12131a; --surface: #1b1d27; --fg: #e7e8f0; --muted: #9a9db3; --line: #2e3142;
+    --accent: #8e9bff; --accent-soft: #252a4d; --add: #6fd39f; --add-soft: #173326;
+    --del: #f08a8f; --del-soft: #3a1d20; --chg: #e8bd5c; --chg-soft: #382c12; color-scheme: dark;
+  }
+  body {
+    background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 40px 64px;
+  }
+  main { max-width: 980px; margin: 0 auto; display: grid; gap: 40px; }
+  header { display: grid; gap: 8px; }
+  .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  h1 { font-size: clamp(26px, 4vw, 34px); line-height: 1.2; margin: 0; text-wrap: balance; font-weight: 700; }
+  h2 { font-size: 20px; margin: 0 0 4px; text-wrap: balance; }
+  p { margin: 0; max-width: 68ch; }
+  .lead { color: var(--muted); }
+  section { display: grid; gap: 14px; min-width: 0; }
+  .figure { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; overflow-x: auto; }
+  .figure pre.mermaid { margin: 0; display: flex; justify-content: center; min-width: 640px; }
+  .caption { font-size: 13px; color: var(--muted); text-align: center; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; background: var(--bg); }
+  tr:last-child td { border-bottom: 0; }
+  .mono { font-family: var(--font-mono); font-size: 13px; white-space: nowrap; }
+  .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+  .pill.add { background: var(--add-soft); color: var(--add); }
+  .pill.del { background: var(--del-soft); color: var(--del); }
+  .pill.chg { background: var(--chg-soft); color: var(--chg); }
+  .pill.keep { background: var(--accent-soft); color: var(--accent); }
+  .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .rule { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; min-width: 0; }
+  .rule h3 { margin: 0; font-size: 15px; }
+  .rule p { font-size: 14px; color: var(--muted); }
+  .rule code, td code { font-family: var(--font-mono); font-size: 12.5px; background: var(--accent-soft); color: var(--accent); padding: 1px 5px; border-radius: 4px; }
+  .narasi { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; display: grid; gap: 12px; }
+  .narasi p { max-width: none; text-align: justify; }
+  .copy-row { display: flex; justify-content: flex-end; }
+  button { font: inherit; font-size: 13px; font-weight: 600; color: var(--accent); background: var(--accent-soft); border: 1px solid transparent; border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow">ICONIX · Preliminary Design · Memperbarui Domain Model</span>
+    <h1>Domain Model Homework Konveksi (revisi)</h1>
+    <p class="lead">Pembaruan dari Gambar 4.1 setelah analisis konsep relasi baru. Pesanan tetap menjadi objek pusat; setiap dokumen lain dapat ditelusuri dari satu nomor pesanan (TT-01).</p>
+  </header>
+
+  <section aria-labelledby="diagram">
+    <h2 id="diagram">Diagram domain model</h2>
+    <div class="figure">
+<pre class="mermaid">
+classDiagram
+  direction LR
+  class Pelanggan
+  class Pesanan
+  class ItemPesanan["Item Pesanan"]
+  class RincianUkuran["Rincian Ukuran"]
+  class Pengadaan["Pengadaan Bahan"]
+  class Pemasok
+  class Pengeluaran
+  class Invoice
+  Pelanggan "1" -- "0..*" Pesanan : melakukan
+  Pesanan "1" *-- "1..*" ItemPesanan : terdiri atas
+  ItemPesanan "1" *-- "1..*" RincianUkuran : dirinci per
+  Pesanan "1" -- "0..*" Invoice : ditagihkan melalui
+  Pesanan "1" -- "0..*" Pengadaan : membutuhkan
+  Pemasok "1" -- "0..*" Pengadaan : memasok
+  Pengadaan "1" -- "0..1" Pengeluaran : menghasilkan
+  Pesanan "0..1" -- "0..*" Pengeluaran : dibebani
+</pre>
+    </div>
+    <p class="caption">Gambar 4.x Domain Model Sistem Informasi Homework Konveksi (pembaruan)</p>
+  </section>
+
+  <section aria-labelledby="perubahan">
+    <h2 id="perubahan">Perubahan dari Gambar 4.1</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Perubahan</th><th>Objek / relasi</th><th>Alasan</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill add">Ditambah</span></td><td>Item Pesanan ◆ Pesanan</td><td>SRS-HK-006 menuntut jenis produk, bahan, dan warna. Satu pesanan dapat berisi beberapa produk, sehingga tidak cukup diwakili satu baris produk.</td></tr>
+          <tr><td><span class="pill add">Ditambah</span></td><td>Rincian Ukuran ◆ Item Pesanan</td><td>SRS-HK-006 menuntut jumlah per ukuran. Setiap produk dirinci menjadi jumlah per ukuran, dengan tambahan harga untuk ukuran tertentu (mis. XXL), menggantikan teks ukuran bebas.</td></tr>
+          <tr><td><span class="pill chg">Diubah</span></td><td>Invoice – Pesanan menjadi 1 : 0..*, wajib terhubung</td><td>Invoice menjadi tagihan bertahap (uang muka, termin, pelunasan). Setiap invoice harus milik satu pesanan agar sisa tagihan dapat dihitung (TT-07).</td></tr>
+          <tr><td><span class="pill del">Dihapus</span></td><td>Invoice – Pelanggan</td><td>Pelanggan sudah diketahui melalui pesanan. Relasi langsung adalah redundansi yang memungkinkan invoice menunjuk pelanggan berbeda dari pemilik pesanan.</td></tr>
+          <tr><td><span class="pill del">Dihapus</span></td><td>Item Invoice ◆ Invoice</td><td>Item tagihan diambil dari Item Pesanan (SRS-HK-013), sehingga tidak ada pengetikan ulang dan data tidak berbeda antara pesanan dan invoice.</td></tr>
+          <tr><td><span class="pill del">Dihapus</span></td><td>Produksi ◆ Pesanan</td><td>Produksi tidak memiliki identitas atau data sendiri selain status. Status produksi cukup menjadi atribut Pesanan.</td></tr>
+          <tr><td><span class="pill keep">Tetap</span></td><td>Pelanggan, Pemasok, Pengadaan, Pengeluaran</td><td>Relasi dipertahankan; multiplisitas dipertegas pada tabel berikut.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="relasi">
+    <h2 id="relasi">Relasi dan multiplisitas</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Relasi</th><th>Multiplisitas</th><th>Jenis</th><th>Makna</th><th>SRS</th></tr></thead>
+        <tbody>
+          <tr><td>Pelanggan – Pesanan</td><td class="mono">1 : 0..*</td><td>Asosiasi</td><td>Satu pelanggan dapat melakukan nol atau banyak pesanan; setiap pesanan dimiliki tepat satu pelanggan.</td><td class="mono">004, 006</td></tr>
+          <tr><td>Pesanan ◆ Item Pesanan</td><td class="mono">1 : 1..*</td><td>Komposisi</td><td>Satu pesanan terdiri atas minimal satu item, yaitu satu produk dengan bahan, warna, dan harga dasar. Item ikut terhapus bersama pesanannya.</td><td class="mono">006</td></tr>
+          <tr><td>Item Pesanan ◆ Rincian Ukuran</td><td class="mono">1 : 1..*</td><td>Komposisi</td><td>Satu item dirinci menjadi minimal satu ukuran beserta jumlah pcs dan tambahan harganya. Rincian ikut terhapus bersama itemnya.</td><td class="mono">006</td></tr>
+          <tr><td>Pesanan – Invoice</td><td class="mono">1 : 0..*</td><td>Asosiasi</td><td>Satu pesanan dapat ditagihkan melalui beberapa invoice; setiap invoice ditujukan untuk tepat satu pesanan.</td><td class="mono">009, 013</td></tr>
+          <tr><td>Pesanan – Pengadaan</td><td class="mono">1 : 0..*</td><td>Asosiasi</td><td>Satu pesanan dapat membutuhkan nol atau banyak pengadaan bahan; setiap pengadaan ditujukan untuk satu pesanan.</td><td class="mono">010, 011</td></tr>
+          <tr><td>Pemasok – Pengadaan</td><td class="mono">1 : 0..*</td><td>Asosiasi</td><td>Satu pemasok dapat memasok nol atau banyak pengadaan; setiap pengadaan berasal dari satu pemasok.</td><td class="mono">005, 010</td></tr>
+          <tr><td>Pengadaan – Pengeluaran</td><td class="mono">1 : 0..1</td><td>Asosiasi</td><td>Setiap pengadaan yang tidak dibatalkan menghasilkan tepat satu pengeluaran bahan baku secara otomatis.</td><td class="mono">012</td></tr>
+          <tr><td>Pesanan – Pengeluaran</td><td class="mono">0..1 : 0..*</td><td>Asosiasi</td><td>Satu pesanan dapat dibebani banyak pengeluaran; pengeluaran operasional boleh tidak terhubung ke pesanan.</td><td class="mono">012, 017</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="aturan">
+    <h2 id="aturan">Aturan yang muncul dari model</h2>
+    <div class="rules">
+      <div class="rule"><h3>Total pesanan adalah nilai turunan</h3><p><code>subtotal item = Σ qty × (harga dasar + tambahan ukuran)</code> dan <code>total = Σ subtotal item − diskon</code>, dihitung ulang setiap kali item berubah.</p></div>
+      <div class="rule"><h3>Pembayaran bersumber dari invoice</h3><p>Sudah dibayar = Σ invoice <code>lunas</code>. Status pesanan: Belum Bayar, Dibayar Sebagian, atau Lunas.</p></div>
+      <div class="rule"><h3>Tagihan tidak melebihi pesanan</h3><p>Σ nominal invoice yang tidak dibatalkan tidak boleh lebih besar dari total pesanan.</p></div>
+      <div class="rule"><h3>Uang muka menjadi invoice</h3><p>Uang muka yang diisi saat mencatat pesanan langsung tercatat sebagai invoice uang muka berstatus lunas.</p></div>
+      <div class="rule"><h3>Pengeluaran mengikuti pengadaan</h3><p>Pesanan pada pengeluaran bahan baku selalu sama dengan pesanan pengadaannya. Pengadaan dibatalkan berarti pengeluarannya dihapus.</p></div>
+      <div class="rule"><h3>Status produksi berurutan</h3><p>Pesanan Diterima → Menunggu Bahan → Proses Produksi → Quality Control → Selesai, maju satu langkah setiap kali.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="narasi">
+    <h2 id="narasi">Draf narasi untuk subbab Memperbarui Domain Model</h2>
+    <div class="narasi" id="narasi-text">
+      <p>Berdasarkan hasil robustness analysis, domain model awal pada Gambar 4.1 dievaluasi dan diperbarui. Pesanan tetap menjadi objek pusat yang menghubungkan seluruh objek lain, sehingga setiap data dapat ditelusuri melalui satu nomor pesanan. Objek Item Pesanan ditambahkan dengan hubungan komposisi terhadap Pesanan, karena satu pesanan dapat terdiri atas beberapa produk dengan bahan, warna, dan harga dasar masing-masing. Setiap item kemudian dirinci melalui objek Rincian Ukuran, juga dengan hubungan komposisi, yang mencatat jumlah pcs per ukuran beserta tambahan harga untuk ukuran tertentu. Kedua objek tersebut tidak dapat berdiri sendiri tanpa objek induknya.</p>
+      <p>Objek Produksi dihapus dan status produksi menjadi atribut Pesanan, karena objek tersebut tidak memiliki data lain selain status pengerjaan. Relasi Invoice dengan Pelanggan juga dihapus, karena pelanggan dapat diketahui melalui pesanan yang ditagihkan sehingga relasi langsung hanya menimbulkan redundansi. Objek Item Invoice dihapus karena rincian tagihan diambil dari Item Pesanan.</p>
+      <p>Hubungan Pesanan dengan Invoice diperbarui menjadi satu pesanan dapat ditagihkan melalui nol atau banyak invoice, sedangkan setiap invoice wajib ditujukan untuk tepat satu pesanan. Invoice berperan sebagai tagihan bertahap berupa uang muka, termin, atau pelunasan, sehingga uang muka dan sisa tagihan dapat dihitung langsung dari invoice yang telah lunas. Hubungan Pemasok, Pengadaan Bahan, dan Pengeluaran dipertahankan: setiap pengadaan berasal dari satu pemasok, ditujukan untuk satu pesanan, dan menghasilkan paling banyak satu pengeluaran bahan baku, sedangkan pengeluaran operasional dapat tidak terhubung ke pesanan mana pun.</p>
+    </div>
+    <div class="copy-row"><button type="button" id="copy-narasi">Salin narasi</button></div>
+  </section>
+</main>
+
+<script>
+  document.getElementById('copy-narasi').addEventListener('click', async (event) => {
+    const button = event.currentTarget
+    const text = [...document.querySelectorAll('#narasi-text p')].map((p) => p.textContent).join('\n\n')
+    try {
+      await navigator.clipboard.writeText(text)
+      button.textContent = 'Tersalin'
+    } catch {
+      const range = document.createRange()
+      range.selectNodeContents(document.getElementById('narasi-text'))
+      const selection = window.getSelection()
+      selection.removeAllRanges()
+      selection.addRange(range)
+      button.textContent = 'Teks dipilih, tekan Ctrl/Cmd+C'
+    }
+  })
+</script>
