@@ -7,12 +7,12 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box">
-                                <h4 class="mb-0 fw-semibold">Supplier List</h4>
+                                <h4 class="mb-0 fw-semibold">Suppliers</h4>
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item">
                                         <a href="javascript: void(0);">Order</a>
                                     </li>
-                                    <li class="breadcrumb-item active">Supplier List</li>
+                                    <li class="breadcrumb-item active">Suppliers</li>
                                 </ol>
                             </div>
                         </div>
@@ -31,11 +31,11 @@
                                             class="form-control"
                                             name="q"
                                             value="{{ request('q') }}"
-                                            placeholder="Search (pic, store, category)..."
+                                            placeholder="Cari..."
                                         />
                                     </div>
                                     <select name="sort" class="form-select" style="width: 180px;">
-                                        <option value="">Sort</option>
+                                        <option value="">Urutkan</option>
                                         <option value="id_desc" @selected(request('sort') === 'id_desc')>ID (Desc)</option>
                                         <option value="id_asc" @selected(request('sort') === 'id_asc')>ID (Asc)</option>
                                         <option value="pic_asc" @selected(request('sort') === 'pic_asc')>PIC (A-Z)</option>
@@ -46,7 +46,7 @@
                                         <option value="category_desc" @selected(request('sort') === 'category_desc')>Category (Z-A)</option>
                                     </select>
                                     <select name="category" class="form-select" style="width: 220px;">
-                                        <option value="">All Category</option>
+                                        <option value="">Semua Kategori</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
                                         @endforeach
@@ -57,7 +57,7 @@
 
                                 <div class="d-flex flex-wrap gap-2 justify-content-md-end align-items-center">
                                     <a href="{{ route('supplier.create') }}" class="btn btn-primary">
-                                        <i class="bx bx-plus me-1"></i>Add Supplier
+                                        <i class="bx bx-plus me-1"></i>Tambah Supplier
                                     </a>
                                 </div>
                             </form>
@@ -72,12 +72,12 @@
                                     <table class="table mb-0">
                                         <thead>
                                             <tr>
-                                                <th style="width: 16%;">PIC Name</th>
-                                                <th style="width: 18%;">Store Name</th>
-                                                <th style="width: 18%;">Product Category</th>
-                                                <th style="width: 14%;">Phone Number</th>
-                                                <th style="width: 26%;">Address</th>
-                                                <th class="text-center" style="width: 8%;">Action</th>
+                                                <th style="width: 16%;">PIC</th>
+                                                <th style="width: 18%;">Nama Toko</th>
+                                                <th style="width: 18%;">Kategori Produk</th>
+                                                <th style="width: 14%;">Telepon</th>
+                                                <th style="width: 26%;">Alamat</th>
+                                                <th class="text-center" style="width: 8%;">Aksi</th>
                                             </tr>
                                         </thead>
                                         <!-- end thead-->

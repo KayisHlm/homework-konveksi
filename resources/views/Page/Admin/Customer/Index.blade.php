@@ -7,12 +7,12 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box">
-                                <h4 class="mb-0 fw-semibold">Customers List</h4>
+                                <h4 class="mb-0 fw-semibold">Customers</h4>
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item">
                                         <a href="javascript: void(0);">Order</a>
                                     </li>
-                                    <li class="breadcrumb-item active">Customers List</li>
+                                    <li class="breadcrumb-item active">Customers</li>
                                 </ol>
                             </div>
                         </div>
@@ -33,18 +33,18 @@
                                                     class="form-control"
                                                     name="q"
                                                     value="{{ request('q') }}"
-                                                    placeholder="Search (name, email, institute)..."
+                                                    placeholder="Cari nama, instansi, ..."
                                                 />
                                             </div>
                                             <select name="sort" class="form-select" style="width: 180px;">
-                                                <option value="">Sort</option>
+                                                <option value="">Urutkan</option>
                                                 <option value="name" @selected(request('sort') === 'name')>Name</option>
                                                 <option value="created_at" @selected(request('sort') === 'created_at')>Joining Date</option>
                                                 <option value="phone" @selected(request('sort') === 'phone')>Phone</option>
                                                 <option value="orders" @selected(request('sort') === 'orders')>Orders</option>
                                             </select>
                                             <select name="has_orders" class="form-select" style="width: 180px;">
-                                                <option value="">All Customers</option>
+                                                <option value="">Semua Customers</option>
                                                 <option value="1" @selected(request('has_orders') === '1')>Has Orders</option>
                                                 <option value="0" @selected(request('has_orders') === '0')>No Orders</option>
                                             </select>
@@ -54,7 +54,7 @@
 
                                         <div class="d-flex flex-wrap gap-2 justify-content-end">
                                             <a href="{{ route('customer.create') }}" class="btn btn-primary">
-                                                <i class="bx bx-plus me-1"></i>Add Customer
+                                                <i class="bx bx-plus me-1"></i>Tambah Customer
                                             </a>
                                         </div>
                                     </form>
@@ -71,12 +71,12 @@
                                     <table class="table text-nowrap mb-0">
                                         <thead class="teble-light">
                                             <tr>
-                                                <th>Customer Name</th>
-                                                <th>Institute</th>
-                                                <th>Phone No.</th>
-                                                <th>Address</th>
-                                                <th>Orders</th>
-                                                <th>Action</th>
+                                                <th>Name</th>
+                                                <th>Instansi</th>
+                                                <th>Telepon</th>
+                                                <th>Alamat</th>
+                                                <th>Pesanan</th>
+                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <!-- end thead-->
