@@ -3,36 +3,39 @@
 namespace Database\Seeders;
 
 use App\Models\Expense;
-use App\Models\Orders;
 use Illuminate\Database\Seeder;
 
+/**
+ * Pengeluaran operasional yang tidak terhubung ke pesanan mana pun (listrik, sewa, dll.).
+ * Pengeluaran per pesanan dibuat oleh OrderSeeder melalui pengadaan.
+ */
 class ExpenseSeeder extends Seeder
 {
     public function run(): void
     {
-        if (!Orders::query()->exists()) {
-            $this->call(OrderSeeder::class);
-        }
+        foreach (range(5, 0) as $monthsAgo) {
+            $month = now()->startOfMonth()->subMonths($monthsAgo);
 
-        $orders = Orders::query()->orderBy('id')->take(3)->get()->values();
-        $categories = [Expense::CATEGORY_JAHIT, Expense::CATEGORY_SABLON, Expense::CATEGORY_TRANSPORTASI];
-
-        foreach ($orders as $index => $order) {
-            Expense::query()->create([
-                'order_id' => $order->id,
-                'category' => $categories[$index % count($categories)],
-                'description' => 'Biaya tambahan produksi untuk ' . $order->product_name,
-                'amount' => 150000 + ($index * 50000),
-                'spent_at' => ($order->created_at?->copy()->addDays(2) ?? now())->toDateString(),
+            Expense::create([
+                'category' => Expense::CATEGORY_OPERASIONAL,
+                'description' => 'Listrik & air workshop '.$month->translatedFormat('F Y'),
+                'amount' => 450000 + ($monthsAgo * 15000),
+                'spent_at' => $month->copy()->addDays(4)->toDateString(),
             ]);
         }
 
-        Expense::query()->create([
-            'order_id' => null,
-            'category' => Expense::CATEGORY_OPERASIONAL,
-            'description' => 'Biaya listrik dan operasional workshop',
-            'amount' => 450000,
-            'spent_at' => now()->subDays(3)->toDateString(),
+        Expense::create([
+            'category' => Expense::CATEGORY_TRANSPORTASI,
+            'description' => 'Bensin & parkir ambil bahan ke Cigondewah',
+            'amount' => 175000,
+            'spent_at' => now()->subDays(9)->toDateString(),
+        ]);
+
+        Expense::create([
+            'category' => Expense::CATEGORY_LAINNYA,
+            'description' => 'Servis mesin obras',
+            'amount' => 350000,
+            'spent_at' => now()->subDays(40)->toDateString(),
         ]);
     }
 }
