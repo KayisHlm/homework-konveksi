@@ -6,10 +6,17 @@
             <div class="col-12">
                 <div class="page-title-box">
                     <h4 class="mb-0 fw-semibold">Dashboard</h4>
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item">Dashboards</li>
-                        <li class="breadcrumb-item active">Dashboard</li>
-                    </ol>
+                    <form method="GET" class="d-flex align-items-center gap-2">
+                        <label for="periode" class="text-muted mb-0">Rekap</label>
+                        <select name="periode" id="periode" class="form-select form-select-sm" style="width: 140px;" onchange="this.form.submit()">
+                            @foreach ($periods as $option)
+                                <option value="{{ $option }}" @selected($period === $option)>{{ ucfirst($option) }}</option>
+                            @endforeach
+                        </select>
+                        <a href="{{ route('report', $reportQuery) }}" class="btn btn-sm btn-outline-primary text-nowrap">
+                            <i class="bx bx-printer me-1"></i>Cetak Rekap
+                        </a>
+                    </form>
                 </div>
             </div>
         </div>
@@ -22,9 +29,9 @@
                         <h3 class="mb-0 fw-bold mt-3 mb-1">
                             Rp <span class="counter-value" data-target="{{ (int) round($totalSalesPaid) }}">0</span>
                         </h3>
-                        <p class="text-muted mb-2">Penjualan Lunas</p>
+                        <p class="text-muted mb-2">Pemasukan ({{ $period }})</p>
                         <span class="badge fs-12 badge-soft-success">
-                            <i class="ti ti-arrow-badge-up"></i> {{ $paidInvoiceCount }} invoice lunas
+                            <i class="ti ti-arrow-badge-up"></i> {{ $paidInvoiceCount }} pembayaran diterima
                         </span>
                     </div>
                 </div>
@@ -37,7 +44,7 @@
                         <h3 class="mb-0 fw-bold mt-3 mb-1">
                             Rp <span class="counter-value" data-target="{{ (int) round($totalExpenses) }}">0</span>
                         </h3>
-                        <p class="text-muted mb-2">Total Pengeluaran</p>
+                        <p class="text-muted mb-2">Pengeluaran ({{ $period }})</p>
                         <span class="badge fs-12 badge-soft-danger">
                             <i class="ti ti-receipt-2"></i> Semua kategori biaya
                         </span>
@@ -55,7 +62,7 @@
                         <p class="text-muted mb-2">Laba</p>
                         <span class="badge fs-12 {{ $profit >= 0 ? 'badge-soft-success' : 'badge-soft-danger' }}">
                             <i class="ti {{ $profit >= 0 ? 'ti-trending-up' : 'ti-trending-down' }}"></i>
-                            Penjualan lunas dikurangi biaya
+                            Pemasukan dikurangi pengeluaran
                         </span>
                     </div>
                 </div>
@@ -68,9 +75,9 @@
                         <h3 class="mb-0 fw-bold mt-3 mb-1">
                             Rp <span class="counter-value" data-target="{{ (int) round($totalOutstanding) }}">0</span>
                         </h3>
-                        <p class="text-muted mb-2">Outstanding Invoice</p>
+                        <p class="text-muted mb-2">Pembayaran Tertunda</p>
                         <span class="badge fs-12 badge-soft-warning">
-                            <i class="ti ti-alert-circle"></i> {{ $outstandingInvoiceCount }} invoice belum lunas
+                            <i class="ti ti-alert-circle"></i> {{ $outstandingInvoiceCount }} pesanan belum lunas
                         </span>
                     </div>
                 </div>
@@ -83,9 +90,9 @@
                         <h3 class="mb-0 fw-bold mt-3 mb-1">
                             <span class="counter-value" data-target="{{ $totalOrders }}">0</span>
                         </h3>
-                        <p class="text-muted mb-2">Total Order</p>
+                        <p class="text-muted mb-2">Total Pesanan</p>
                         <span class="badge fs-12 badge-soft-primary">
-                            <i class="ti ti-package"></i> {{ $newOrdersThisMonth }} order baru bulan ini
+                            <i class="ti ti-package"></i> {{ $newOrdersThisMonth }} pesanan baru bulan ini
                         </span>
                     </div>
                 </div>
@@ -98,9 +105,9 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div>
                             <h4 class="card-title mb-1">Overview</h4>
-                            <p class="text-muted mb-0">Pergerakan penjualan, outstanding, dan order 12 bulan terakhir</p>
+                            <p class="text-muted mb-0">Pemasukan, pengeluaran, dan jumlah pesanan per periode</p>
                         </div>
-                        <span class="badge badge-soft-primary">12 bulan terakhir</span>
+                        <span class="badge badge-soft-primary">Rekap {{ $period }}</span>
                     </div>
                     <div class="card-body">
                         <div dir="ltr">
@@ -112,11 +119,11 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h4 class="card-title mb-1">Recent Orders</h4>
+                                <h4 class="card-title mb-1">Pesanan Terbaru</h4>
                                 <p class="text-muted mb-0">Pesanan terbaru dengan informasi produksi dan pelanggan</p>
                             </div>
                             <a href="{{ route('order.create') }}" class="btn btn-sm btn-primary">
-                                <i class="bx bx-plus me-1"></i>Create Order
+                                <i class="bx bx-plus me-1"></i>Buat Pesanan
                             </a>
                         </div>
                     </div>
@@ -137,7 +144,7 @@
                                     <tr>
                                         <td>
                                             <a href="{{ route('order-detail', $order) }}">
-                                                {{ $order->order_number ?? "#ORD{$order->id}" }}
+                                                {{ $order->order_number }}
                                             </a>
                                         </td>
                                         <td>{{ $order->created_at?->format('d M, Y') }}</td>
@@ -146,27 +153,16 @@
                                                 <div class="avatar-sm bg-light rounded d-inline-flex align-items-center justify-content-center">
                                                     <iconify-icon icon="iconamoon:shopping-bag-duotone" class="fs-20 text-muted"></iconify-icon>
                                                 </div>
-                                                <span>{{ $order->product_name ?? '-' }}</span>
+                                                <span>{{ $order->productSummary() }}</span>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="fw-medium">{{ $order->customer?->name ?? '-' }}</div>
                                             <small class="text-muted">{{ $order->customer?->email ?? '-' }}</small>
                                         </td>
-                                        <td>Rp {{ number_format((float) $order->total_price, 0, ',', '.') }}</td>
+                                        <td>{{ Status::rupiah($order->total_price) }}</td>
                                         <td>
-                                            @php
-                                                $productionClass = match ($order->production_status) {
-                                                    'selesai' => 'success',
-                                                    'quality_control' => 'warning',
-                                                    'proses_produksi' => 'info',
-                                                    'menunggu_bahan' => 'secondary',
-                                                    default => 'primary',
-                                                };
-                                            @endphp
-                                            <span class="badge badge-soft-{{ $productionClass }}">
-                                                {{ ucwords(str_replace('_', ' ', (string) $order->production_status)) }}
-                                            </span>
+                                            <span class="badge badge-soft-{{ Status::badge($order->production_status) }}">{{ Status::label($order->production_status) }}</span>
                                         </td>
                                     </tr>
                                 @empty
@@ -181,11 +177,11 @@
                         <div class="col-sm">
                             <div class="text-muted">
                                 Menampilkan <span class="fw-semibold">{{ $recentOrders->count() }}</span> dari
-                                <span class="fw-semibold">{{ $totalOrders }}</span> order terbaru
+                                <span class="fw-semibold">{{ $totalOrders }}</span> pesanan
                             </div>
                         </div>
                         <div class="col-sm-auto mt-3 mt-sm-0">
-                            <a href="{{ route('order') }}" class="btn btn-sm btn-light">Lihat semua order</a>
+                            <a href="{{ route('order') }}" class="btn btn-sm btn-light">Lihat semua pesanan</a>
                         </div>
                     </div>
                 </div>
@@ -196,7 +192,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div>
                             <h4 class="card-title mb-1">Penjualan Berdasarkan Produk</h4>
-                            <p class="text-muted mb-0">Top 5 produk paling sering dipesan</p>
+                            <p class="text-muted mb-0">Top 5 produk berdasarkan jumlah pcs dipesan</p>
                         </div>
                         <span class="badge badge-soft-primary">Top 5 produk</span>
                     </div>
@@ -209,7 +205,7 @@
                                 <thead class="bg-light bg-opacity-50 thead-sm">
                                     <tr>
                                         <th class="py-1">Produk</th>
-                                        <th class="py-1">Orders</th>
+                                        <th class="py-1">Pcs</th>
                                         <th class="py-1">Porsi</th>
                                     </tr>
                                 </thead>
@@ -256,7 +252,7 @@
                             @endphp
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between mb-1">
-                                    <span>{{ ucwords(str_replace('_', ' ', $status)) }}</span>
+                                    <span>{{ Status::label($status) }}</span>
                                     <span class="fw-semibold">{{ $count }}</span>
                                 </div>
                                 <div class="progress progress-sm">
@@ -279,7 +275,7 @@
         const salesCategoryElement = document.querySelector('#sales-category-chart');
         const overviewLabels = @json($overviewLabels);
         const paidSalesSeries = @json($paidSalesSeries);
-        const outstandingSalesSeries = @json($outstandingSalesSeries);
+        const expenseSeries = @json($expenseSeries);
         const orderSeries = @json($orderSeries);
         const salesByProduct = @json($salesByProduct);
 
@@ -319,12 +315,12 @@
                 },
                 series: [
                     {
-                        name: 'Penjualan Lunas',
+                        name: 'Pemasukan',
                         data: paidSalesSeries,
                     },
                     {
-                        name: 'Belum Lunas',
-                        data: outstandingSalesSeries,
+                        name: 'Pengeluaran',
+                        data: expenseSeries,
                     },
                     {
                         name: 'Jumlah Order',
