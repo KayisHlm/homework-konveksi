@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
 use App\Models\Orders;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -38,9 +39,7 @@ class ExpenseController extends Controller
                 $query
                     ->where('description', 'like', "%{$q}%")
                     ->orWhereHas('order', function ($orderQuery) use ($q) {
-                        $orderQuery
-                            ->where('order_number', 'like', "%{$q}%")
-                            ->orWhere('product_name', 'like', "%{$q}%");
+                        $orderQuery->where('order_number', 'like', "%{$q}%");
                     });
             });
         }
@@ -73,14 +72,14 @@ class ExpenseController extends Controller
         ]);
     }
 
-    public function store(ExpenseRequest $request)
+    public function store(ExpenseRequest $request): RedirectResponse
     {
         Expense::create($request->validated());
 
         return redirect()->route('expense')->with('success', 'Pengeluaran berhasil ditambahkan.');
     }
 
-    public function edit(Expense $expense): View|\Illuminate\Http\RedirectResponse
+    public function edit(Expense $expense): View|RedirectResponse
     {
         if ($expense->procurement_id) {
             return redirect()->route('expense')->with('error', 'Pengeluaran dari pengadaan hanya bisa diubah dari modul pengadaan.');
@@ -92,7 +91,7 @@ class ExpenseController extends Controller
         ]);
     }
 
-    public function update(ExpenseRequest $request, Expense $expense)
+    public function update(ExpenseRequest $request, Expense $expense): RedirectResponse
     {
         if ($expense->procurement_id) {
             return redirect()->route('expense')->with('error', 'Pengeluaran dari pengadaan hanya bisa diubah dari modul pengadaan.');
@@ -103,7 +102,7 @@ class ExpenseController extends Controller
         return redirect()->route('expense')->with('success', 'Pengeluaran berhasil diperbarui.');
     }
 
-    public function destroy(Expense $expense)
+    public function destroy(Expense $expense): RedirectResponse
     {
         if ($expense->procurement_id) {
             return redirect()->route('expense')->with('error', 'Pengeluaran dari pengadaan hanya bisa dihapus dari modul pengadaan.');
@@ -117,7 +116,7 @@ class ExpenseController extends Controller
     protected function formOptions(): array
     {
         return [
-            'categories' => Expense::categories(),
+            'categories' => array_values(array_diff(Expense::categories(), [Expense::CATEGORY_BAHAN_BAKU])),
             'orders' => Orders::query()->with('customer')->orderByDesc('created_at')->get(),
         ];
     }

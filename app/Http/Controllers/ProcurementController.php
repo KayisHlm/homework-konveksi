@@ -6,6 +6,7 @@ use App\Http\Requests\ProcurementRequest;
 use App\Models\Orders;
 use App\Models\Procurement;
 use App\Models\Suppliers;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -31,9 +32,7 @@ class ProcurementController extends Controller
                 $query
                     ->where('material_name', 'like', "%{$q}%")
                     ->orWhereHas('order', function ($orderQuery) use ($q) {
-                        $orderQuery
-                            ->where('order_number', 'like', "%{$q}%")
-                            ->orWhere('product_name', 'like', "%{$q}%");
+                        $orderQuery->where('order_number', 'like', "%{$q}%");
                     })
                     ->orWhereHas('supplier', function ($supplierQuery) use ($q) {
                         $supplierQuery
@@ -78,13 +77,14 @@ class ProcurementController extends Controller
         ]);
     }
 
-    public function store(ProcurementRequest $request)
+    public function store(ProcurementRequest $request): RedirectResponse
     {
-        $procurement = Procurement::create($request->validated());
-
-        $procurement->order()->update([
-            'production_status' => Orders::PRODUCTION_STATUS_MENUNGGU_BAHAN,
+        $procurement = Procurement::create([
+            ...$request->safe()->except('received_at'),
+            'status' => Procurement::STATUS_DIPESAN,
         ]);
+
+        $this->markOrderWaitingForMaterial($procurement);
 
         return redirect()->route('procurement')->with('success', 'Pengadaan berhasil ditambahkan.');
     }
@@ -97,36 +97,68 @@ class ProcurementController extends Controller
         ]);
     }
 
-    public function update(ProcurementRequest $request, Procurement $procurement)
+    public function update(ProcurementRequest $request, Procurement $procurement): RedirectResponse
     {
-        $procurement->update($request->validated());
+        $data = $request->validated();
+        if ($procurement->status !== Procurement::STATUS_DITERIMA || empty($data['received_at'])) {
+            unset($data['received_at']);
+        }
+
+        $procurement->update($data);
+        $this->markOrderWaitingForMaterial($procurement);
 
         return redirect()->route('procurement')->with('success', 'Pengadaan berhasil diperbarui.');
     }
 
-    public function destroy(Procurement $procurement)
+    public function destroy(Procurement $procurement): RedirectResponse
     {
         $procurement->delete();
 
         return redirect()->route('procurement')->with('success', 'Pengadaan berhasil dihapus.');
     }
 
-    public function receive(Procurement $procurement)
+    public function receive(Request $request, Procurement $procurement): RedirectResponse
     {
-        $procurement->update([
-            'status' => Procurement::STATUS_DITERIMA,
-            'received_at' => $procurement->received_at ?: now()->toDateString(),
+        if ($procurement->status !== Procurement::STATUS_DIPESAN) {
+            return back()->with('error', 'Hanya pengadaan berstatus dipesan yang dapat dikonfirmasi.');
+        }
+
+        $validated = $request->validate([
+            'received_at' => 'nullable|date|after_or_equal:'.$procurement->ordered_at->toDateString(),
         ]);
 
-        return back()->with('success', 'Status pengadaan berhasil diubah menjadi diterima.');
+        $procurement->update([
+            'status' => Procurement::STATUS_DITERIMA,
+            'received_at' => $validated['received_at'] ?? now()->toDateString(),
+        ]);
+
+        return back()->with('success', 'Penerimaan bahan berhasil dikonfirmasi.');
+    }
+
+    public function cancel(Procurement $procurement): RedirectResponse
+    {
+        if ($procurement->status !== Procurement::STATUS_DIPESAN) {
+            return back()->with('error', 'Hanya pengadaan berstatus dipesan yang dapat dibatalkan.');
+        }
+
+        $procurement->update(['status' => Procurement::STATUS_DIBATALKAN]);
+
+        return back()->with('success', 'Pengadaan dibatalkan dan pengeluarannya dihapus.');
+    }
+
+    /** Pesanan baru menunggu bahan; status yang sudah lebih maju tidak dimundurkan. */
+    protected function markOrderWaitingForMaterial(Procurement $procurement): void
+    {
+        $procurement->order()
+            ->where('production_status', Orders::PRODUCTION_STATUS_PESANAN_DITERIMA)
+            ->update(['production_status' => Orders::PRODUCTION_STATUS_MENUNGGU_BAHAN]);
     }
 
     protected function formOptions(): array
     {
         return [
-            'orders' => Orders::query()->with('customer')->orderByDesc('created_at')->get(),
+            'orders' => Orders::query()->with(['customer', 'items'])->orderByDesc('created_at')->get(),
             'suppliers' => Suppliers::query()->orderBy('store_name')->get(),
-            'statuses' => Procurement::statuses(),
         ];
     }
 }

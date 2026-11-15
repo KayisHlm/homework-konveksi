@@ -25,7 +25,7 @@
                         <select name="status" class="form-select" style="width: 180px;">
                             <option value="">Semua status</option>
                             @foreach ($statuses as $status)
-                                <option value="{{ $status }}" @selected(request('status') === $status)>{{ ucfirst($status) }}</option>
+                                <option value="{{ $status }}" @selected(request('status') === $status)>{{ Status::label($status) }}</option>
                             @endforeach
                         </select>
                         <select name="supplier_id" class="form-select" style="width: 220px;">
@@ -66,19 +66,22 @@
                                         <td>{{ $procurement->order?->order_number ?? '-' }}</td>
                                         <td>{{ $procurement->supplier?->store_name ?? '-' }}</td>
                                         <td>{{ $procurement->material_name }}</td>
-                                        <td>Rp {{ number_format((float) $procurement->total_cost, 0, ',', '.') }}</td>
+                                        <td>{{ Status::rupiah($procurement->total_cost) }}</td>
                                         <td>
-                                            <span class="badge {{ $procurement->status === 'diterima' ? 'badge-soft-success' : ($procurement->status === 'dibatalkan' ? 'badge-soft-danger' : 'badge-soft-warning') }}">
-                                                {{ ucfirst($procurement->status) }}
-                                            </span>
+                                            <span class="badge badge-soft-{{ Status::badge($procurement->status) }}">{{ Status::label($procurement->status) }}</span>
                                         </td>
                                         <td class="text-center">
                                             <div class="d-inline-flex align-items-center gap-2 justify-content-center flex-nowrap">
-                                                @if ($procurement->status !== 'diterima')
+                                                @if ($procurement->status === \App\Models\Procurement::STATUS_DIPESAN)
                                                     <form method="POST" action="{{ route('procurement.receive', $procurement) }}" class="d-inline">
                                                         @csrf
                                                         @method('PATCH')
                                                         <button type="submit" class="btn btn-sm btn-soft-success">Diterima</button>
+                                                    </form>
+                                                    <form method="POST" action="{{ route('procurement.cancel', $procurement) }}" class="d-inline">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="btn btn-sm btn-soft-warning" onclick="return confirm('Batalkan pengadaan ini? Pengeluarannya akan dihapus.')">Batalkan</button>
                                                     </form>
                                                 @endif
                                                 <a href="{{ route('procurement.edit', $procurement) }}" class="btn btn-sm btn-soft-primary" title="Edit">

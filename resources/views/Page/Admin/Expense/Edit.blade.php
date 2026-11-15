@@ -34,7 +34,7 @@
                             <label class="form-label">Kategori</label>
                             <select name="category" class="form-select @error('category') is-invalid @enderror" required>
                                 @foreach ($categories as $category)
-                                    <option value="{{ $category }}" @selected(old('category', $expense->category) === $category)>{{ ucwords(str_replace('_', ' ', $category)) }}</option>
+                                    <option value="{{ $category }}" @selected(old('category', $expense->category) === $category)>{{ Status::label($category) }}</option>
                                 @endforeach
                             </select>
                             @error('category')<div class="invalid-feedback">{{ $message }}</div>@enderror

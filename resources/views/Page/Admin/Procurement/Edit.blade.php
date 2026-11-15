@@ -24,7 +24,7 @@
                             <label class="form-label">Pesanan</label>
                             <select name="order_id" class="form-select @error('order_id') is-invalid @enderror" required>
                                 @foreach ($orders as $order)
-                                    <option value="{{ $order->id }}" @selected(old('order_id', $procurement->order_id) == $order->id)>{{ $order->order_number ?? 'Order #' . $order->id }} - {{ $order->product_name }}</option>
+                                    <option value="{{ $order->id }}" @selected(old('order_id', $procurement->order_id) == $order->id)>{{ $order->order_number }} - {{ $order->customer?->name }} ({{ $order->productSummary() }})</option>
                                 @endforeach
                             </select>
                             @error('order_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -69,19 +69,19 @@
                             @error('expected_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Tanggal Diterima</label>
-                            <input type="date" name="received_at" class="form-control @error('received_at') is-invalid @enderror" value="{{ old('received_at', $procurement->received_at?->toDateString()) }}" />
-                            @error('received_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="col-md-6">
                             <label class="form-label">Status</label>
-                            <select name="status" class="form-select @error('status') is-invalid @enderror">
-                                @foreach ($statuses as $status)
-                                    <option value="{{ $status }}" @selected(old('status', $procurement->status) === $status)>{{ ucfirst($status) }}</option>
-                                @endforeach
-                            </select>
-                            @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            <div class="form-control-plaintext">
+                                <span class="badge badge-soft-{{ Status::badge($procurement->status) }}">{{ Status::label($procurement->status) }}</span>
+                                <small class="text-muted ms-1">diubah lewat tombol Diterima / Batalkan</small>
+                            </div>
                         </div>
+                        @if ($procurement->status === \App\Models\Procurement::STATUS_DITERIMA)
+                            <div class="col-md-6">
+                                <label class="form-label">Tanggal Diterima</label>
+                                <input type="date" name="received_at" class="form-control @error('received_at') is-invalid @enderror" value="{{ old('received_at', $procurement->received_at?->toDateString()) }}" />
+                                @error('received_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                        @endif
                         <div class="col-12">
                             <label class="form-label">Catatan</label>
                             <textarea name="notes" class="form-control @error('notes') is-invalid @enderror" rows="3">{{ old('notes', $procurement->notes) }}</textarea>

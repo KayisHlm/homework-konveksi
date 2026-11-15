@@ -32,7 +32,7 @@
                         <select name="category" class="form-select" aria-label="Kategori">
                             <option value="">Semua kategori</option>
                             @foreach ($categories as $category)
-                                <option value="{{ $category }}" @selected(request('category') === $category)>{{ ucwords(str_replace('_', ' ', $category)) }}</option>
+                                <option value="{{ $category }}" @selected(request('category') === $category)>{{ Status::label($category) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -69,7 +69,7 @@
                                 @forelse ($expenses as $expense)
                                     <tr>
                                         <td>{{ $expense->spent_at?->format('d M Y') ?? '-' }}</td>
-                                        <td>{{ ucwords(str_replace('_', ' ', $expense->category)) }}</td>
+                                        <td>{{ Status::label($expense->category) }}</td>
                                         <td>
                                             {{ $expense->description }}
                                             @if ($expense->procurement_id)
@@ -113,7 +113,7 @@
                             <tbody>
                                 @forelse ($linkedTotals as $category => $amount)
                                     <tr>
-                                        <td>{{ ucwords(str_replace('_', ' ', $category)) }}</td>
+                                        <td>{{ Status::label($category) }}</td>
                                         <td class="text-end">Rp {{ number_format((float) $amount, 0, ',', '.') }}</td>
                                     </tr>
                                 @empty
@@ -131,7 +131,7 @@
                             <tbody>
                                 @forelse ($generalTotals as $category => $amount)
                                     <tr>
-                                        <td>{{ ucwords(str_replace('_', ' ', $category)) }}</td>
+                                        <td>{{ Status::label($category) }}</td>
                                         <td class="text-end">Rp {{ number_format((float) $amount, 0, ',', '.') }}</td>
                                     </tr>
                                 @empty
