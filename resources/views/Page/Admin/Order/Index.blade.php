@@ -6,10 +6,10 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="mb-0 fw-semibold">Orders</h4>
+                    <h4 class="mb-0 fw-semibold">Pesanan</h4>
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item">Admin</li>
-                        <li class="breadcrumb-item active">Orders</li>
+                        <li class="breadcrumb-item active">Pesanan</li>
                     </ol>
                 </div>
             </div>
@@ -21,18 +21,18 @@
                     <div class="d-flex flex-wrap gap-2">
                         <div class="search-bar">
                             <span><i class="bx bx-search-alt"></i></span>
-                            <input type="search" class="form-control" name="q" value="{{ request('q') }}" placeholder="Cari nomor pesanan, produk, customer..." />
+                            <input type="search" class="form-control" name="q" value="{{ request('q') }}" placeholder="Cari nomor pesanan, produk, pelanggan..." />
                         </div>
                         <select name="production_status" class="form-select" style="width: 220px;">
                             <option value="">Semua status produksi</option>
                             @foreach ($productionStatuses as $status)
-                                <option value="{{ $status }}" @selected(request('production_status') === $status)>{{ ucwords(str_replace('_', ' ', $status)) }}</option>
+                                <option value="{{ $status }}" @selected(request('production_status') === $status)>{{ Status::label($status) }}</option>
                             @endforeach
                         </select>
                         <select name="payment_status" class="form-select" style="width: 180px;">
                             <option value="">Semua pembayaran</option>
-                            @foreach (['pending', 'paid', 'cancelled'] as $status)
-                                <option value="{{ $status }}" @selected(request('payment_status') === $status)>{{ ucfirst($status) }}</option>
+                            @foreach ($paymentStatuses as $status)
+                                <option value="{{ $status }}" @selected(request('payment_status') === $status)>{{ Status::label($status) }}</option>
                             @endforeach
                         </select>
                         <button type="submit" class="btn btn-primary">Filter</button>
@@ -40,7 +40,7 @@
                     </div>
 
                     <a href="{{ route('order.create') }}" class="btn btn-primary">
-                        <i class="bx bx-plus me-1"></i>Create Order
+                        <i class="bx bx-plus me-1"></i>Buat Pesanan
                     </a>
                 </form>
             </div>
@@ -66,22 +66,22 @@
                     <tbody>
                         @forelse ($orders as $order)
                             <tr>
-                                <td><a href="{{ route('order-detail', $order) }}">{{ $order->order_number ?? '-' }}</a></td>
+                                <td><a href="{{ route('order-detail', $order) }}">{{ $order->order_number }}</a></td>
                                 <td>{{ $order->created_at?->format('d M Y') }}</td>
-                                <td>{{ $order->product_name }}</td>
+                                <td>{{ $order->productSummary() }}</td>
                                 <td>{{ $order->customer?->name ?? '-' }}</td>
-                                <td>{{ $order->quantity }}</td>
-                                <td>Rp {{ number_format((float) $order->total_price, 0, ',', '.') }}</td>
+                                <td>{{ $order->totalQuantity() }}</td>
+                                <td>{{ Status::rupiah($order->total_price) }}</td>
                                 <td>{{ $order->due_date?->format('d M Y') ?? '-' }}</td>
-                                <td>{{ ucwords(str_replace('_', ' ', (string) $order->production_status)) }}</td>
-                                <td>{{ ucfirst((string) $order->payment_status) }}</td>
+                                <td><span class="badge badge-soft-{{ Status::badge($order->production_status) }}">{{ Status::label($order->production_status) }}</span></td>
+                                <td><span class="badge badge-soft-{{ Status::badge($order->payment_status) }}">{{ Status::label($order->payment_status) }}</span></td>
                                 <td class="text-end">
                                     <a href="{{ route('order-detail', $order) }}" class="btn btn-sm btn-soft-secondary me-1"><i class="bx bx-show"></i></a>
                                     <a href="{{ route('order.edit', $order) }}" class="btn btn-sm btn-soft-primary me-1"><i class="bx bx-edit"></i></a>
                                     <form method="POST" action="{{ route('order.destroy', $order) }}" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-soft-danger" onclick="return confirm('Hapus pesanan ini?')">
+                                        <button type="submit" class="btn btn-sm btn-soft-danger" onclick="return confirm('Hapus pesanan {{ $order->order_number }}? Item, pengadaan bahan, dan pengeluaran yang terhubung juga akan terhapus.')">
                                             <i class="bx bx-trash"></i>
                                         </button>
                                     </form>

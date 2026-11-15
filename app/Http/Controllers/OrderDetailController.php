@@ -11,22 +11,24 @@ class OrderDetailController extends Controller
     {
         $order->loadMissing([
             'customer',
+            'items.sizes',
             'procurements.supplier',
             'expenses.procurement',
-            'invoices.items',
+            'invoices' => fn ($query) => $query->orderBy('issued_at')->orderBy('id'),
         ]);
 
-        $revenue = (float) ($order->invoices->sum('total_amount') ?: $order->total_price);
+        $amountPaid = $order->amountPaid();
         $totalCosts = (float) $order->expenses->sum('amount');
-        $profit = $revenue - $totalCosts;
 
         return view('Page.Admin.OrderDetail.Index', [
             'order' => $order,
-            'revenue' => $revenue,
+            'amountPaid' => $amountPaid,
+            'remainingBalance' => $order->remainingBalance(),
+            'billableBalance' => $order->billableBalance(),
+            // Ringkasan keuangan per pesanan (SRS-HK-017), hanya ditampilkan untuk pemilik.
             'totalCosts' => $totalCosts,
-            'profit' => $profit,
+            'profit' => (float) $order->total_price - $totalCosts,
             'productionStatuses' => Orders::productionStatuses(),
-            'paymentStatuses' => ['pending', 'paid', 'cancelled'],
         ]);
     }
 }
