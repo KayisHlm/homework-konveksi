@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="mb-0 fw-semibold">Invoice Detail</h4>
+                    <h4 class="mb-0 fw-semibold">Detail Invoice</h4>
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item"><a href="{{ route('invoice') }}">Invoice</a></li>
                         <li class="breadcrumb-item active">{{ $invoice->invoice_number }}</li>
@@ -32,19 +32,16 @@
                         </div>
                     </div>
                     <div class="col-md-6 text-md-end">
-                        <span class="badge {{ match ($invoice->payment_status) {
-                            'paid' => 'badge-soft-success',
-                            'unpaid' => 'badge-soft-warning',
-                            'sent' => 'badge-soft-primary',
-                            'cancelled' => 'badge-soft-danger',
-                            default => 'badge-soft-secondary',
-                        } }} fs-13 px-3 py-2">
-                            {{ strtoupper((string) $invoice->payment_status) }}
+                        <span class="badge badge-soft-{{ Status::badge($invoice->status) }} fs-13 px-3 py-2">
+                            {{ strtoupper(Status::label($invoice->status)) }}
                         </span>
                         <h3 class="fw-bold mt-3 mb-1">{{ $invoice->invoice_number }}</h3>
-                        <div class="text-muted">Issued: {{ $invoice->issued_at?->format('d M Y') ?? '-' }}</div>
-                        <div class="text-muted">Due: {{ $invoice->due_date?->format('d M Y') ?? '-' }}</div>
-                        <div class="text-muted">Payment via: {{ $invoice->payment_via ?: '-' }}</div>
+                        <div class="text-muted">Jenis: {{ Status::label($invoice->type) }}</div>
+                        <div class="text-muted">Terbit: {{ $invoice->issued_at?->format('d M Y') ?? '-' }}</div>
+                        <div class="text-muted">Jatuh tempo: {{ $invoice->due_date?->format('d M Y') ?? '-' }}</div>
+                        @if ($invoice->paid_at)
+                            <div class="text-muted">Dibayar: {{ $invoice->paid_at->format('d M Y') }} ({{ Status::label($invoice->payment_method) }})</div>
+                        @endif
                     </div>
                 </div>
 
@@ -52,11 +49,11 @@
                     <div class="col-lg-6">
                         <div class="border rounded-3 p-3 h-100">
                             <div class="text-uppercase text-muted fs-12 mb-2">Ditagihkan Kepada</div>
-                            <div class="fw-semibold fs-18">{{ $invoice->customer?->name ?? '-' }}</div>
-                            <div class="text-muted">{{ $invoice->customer?->institute ?? '-' }}</div>
-                            <div class="text-muted">{{ $invoice->customer?->address ?? '-' }}</div>
-                            <div class="text-muted">Phone: {{ $invoice->customer?->phone ?? '-' }}</div>
-                            <div class="text-muted">Email: {{ $invoice->customer?->email ?? '-' }}</div>
+                            <div class="fw-semibold fs-18">{{ $order->customer?->name ?? '-' }}</div>
+                            <div class="text-muted">{{ $order->customer?->institute ?? '-' }}</div>
+                            <div class="text-muted">{{ $order->customer?->address ?? '-' }}</div>
+                            <div class="text-muted">Telepon: {{ $order->customer?->phone ?? '-' }}</div>
+                            <div class="text-muted">Email: {{ $order->customer?->email ?? '-' }}</div>
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -65,20 +62,16 @@
                             <div class="d-flex justify-content-between mb-2">
                                 <span>No. Pesanan</span>
                                 <span class="fw-medium">
-                                    @if ($invoice->order)
-                                        <a href="{{ route('order-detail', $invoice->order) }}">{{ $invoice->order->order_number }}</a>
-                                    @else
-                                        -
-                                    @endif
+                                    <a href="{{ route('order-detail', $order) }}">{{ $order->order_number }}</a>
                                 </span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Total Item</span>
-                                <span class="fw-medium">{{ $invoice->items->count() }}</span>
+                                <span class="fw-medium">{{ $order->items->count() }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Total Qty</span>
-                                <span class="fw-medium">{{ number_format((float) $invoice->items->sum('quantity'), 0, ',', '.') }}</span>
+                                <span class="fw-medium">{{ number_format($order->totalQuantity(), 0, ',', '.') }}</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>Catatan</span>
@@ -93,26 +86,26 @@
                         <thead class="bg-light bg-opacity-50">
                             <tr>
                                 <th class="border-0 py-2">Produk</th>
+                                <th class="border-0 py-2">Bahan / Warna</th>
+                                <th class="border-0 py-2">Rincian Ukuran</th>
                                 <th class="border-0 py-2 text-end">Qty</th>
-                                <th class="border-0 py-2 text-end">Harga</th>
+                                <th class="border-0 py-2 text-end">Harga Dasar</th>
                                 <th class="border-0 py-2 text-end">Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($invoice->items as $item)
+                            @foreach ($order->items as $item)
                                 <tr>
                                     <td>
                                         <div class="fw-medium">{{ $item->product_name }}</div>
                                     </td>
-                                    <td class="text-end">{{ number_format((float) $item->quantity, 0, ',', '.') }}</td>
-                                    <td class="text-end">Rp {{ number_format((float) $item->unit_price, 0, ',', '.') }}</td>
-                                    <td class="text-end fw-semibold">Rp {{ number_format((float) $item->line_total, 0, ',', '.') }}</td>
+                                    <td>{{ $item->material }}{{ $item->color ? ' / ' . $item->color : '' }}</td>
+                                    <td class="text-wrap small">{{ $item->sizeSummary() }}</td>
+                                    <td class="text-end">{{ number_format($item->quantity, 0, ',', '.') }}</td>
+                                    <td class="text-end">{{ Status::rupiah($item->unit_price) }}</td>
+                                    <td class="text-end fw-semibold">{{ Status::rupiah($item->subtotal) }}</td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4">Tidak ada item invoice.</td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -124,15 +117,27 @@
                                 <tbody>
                                     <tr>
                                         <td class="text-muted">Subtotal</td>
-                                        <td class="text-end fw-medium">Rp {{ number_format((float) $invoice->subtotal_amount, 0, ',', '.') }}</td>
+                                        <td class="text-end fw-medium">{{ Status::rupiah($subtotal) }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-muted">Diskon</td>
-                                        <td class="text-end fw-medium">Rp {{ number_format((float) $invoice->discount_amount, 0, ',', '.') }}</td>
+                                        <td class="text-end fw-medium">- {{ Status::rupiah($order->discount_amount) }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-muted border-top pt-2"><strong>Total</strong></td>
-                                        <td class="text-end fw-bold fs-4 border-top pt-2">Rp {{ number_format((float) $invoice->total_amount, 0, ',', '.') }}</td>
+                                        <td class="text-muted">Total Pesanan</td>
+                                        <td class="text-end fw-medium">{{ Status::rupiah($order->total_price) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Pembayaran Sebelumnya</td>
+                                        <td class="text-end fw-medium">- {{ Status::rupiah($paidBefore) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted border-top pt-2"><strong>Tagihan Ini ({{ Status::label($invoice->type) }})</strong></td>
+                                        <td class="text-end fw-bold fs-4 border-top pt-2">{{ Status::rupiah($invoice->amount) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Sisa Setelah Tagihan Ini</td>
+                                        <td class="text-end fw-medium">{{ Status::rupiah($remainingAfter) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -143,6 +148,13 @@
                 <div class="mt-5 mb-1 d-print-none">
                     <div class="text-end d-flex justify-content-end gap-2">
                         <a href="{{ route('invoice.edit', $invoice) }}" class="btn btn-outline-primary">Edit Invoice</a>
+                        @if ($invoice->status !== \App\Models\Invoice::STATUS_LUNAS)
+                            <form method="POST" action="{{ route('invoice.destroy', $invoice) }}" onsubmit="return confirm('Hapus invoice ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger">Hapus</button>
+                            </form>
+                        @endif
                         <button type="button" class="btn btn-primary" onclick="window.print()">Print</button>
                     </div>
                 </div>
