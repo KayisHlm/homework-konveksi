@@ -1,0 +1,128 @@
+<title>Robustness Diagram Login</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: dokumen teknis satu kolom; diagram lebar penuh di atas, lalu pemetaan langkah, temuan, dan use case revisi. */
+  :root {
+    --bg: #f7f7fb; --surface: #ffffff; --fg: #1d1f2b; --muted: #5d6075; --line: #dcdde8;
+    --accent: #3d4fd6; --accent-soft: #e8eafc; --warn: #8a5a00; --warn-soft: #fbf0d9;
+    --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #12131a; --surface: #1b1d27; --fg: #e7e8f0; --muted: #9a9db3; --line: #2e3142;
+      --accent: #8e9bff; --accent-soft: #252a4d; --warn: #e8bd5c; --warn-soft: #382c12; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #12131a; --surface: #1b1d27; --fg: #e7e8f0; --muted: #9a9db3; --line: #2e3142;
+    --accent: #8e9bff; --accent-soft: #252a4d; --warn: #e8bd5c; --warn-soft: #382c12; color-scheme: dark; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; }
+  main { max-width: 1040px; margin: 0 auto; display: grid; gap: 36px; }
+  header { display: grid; gap: 6px; }
+  .tag { font-family: var(--font-mono); font-size: 13px; color: var(--accent); }
+  h1 { font-size: clamp(26px, 4vw, 34px); line-height: 1.2; margin: 0; text-wrap: balance; }
+  h2 { font-size: 20px; margin: 0; text-wrap: balance; }
+  p { margin: 0; max-width: 68ch; }
+  .lead { color: var(--muted); }
+  section { display: grid; gap: 14px; min-width: 0; }
+  figure { margin: 0; display: grid; gap: 10px; }
+  .canvas { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; overflow-x: auto; color: var(--fg); }
+  .canvas svg { display: block; width: 100%; min-width: 760px; height: auto; font-family: var(--font-body); }
+  figcaption { font-size: 13px; color: var(--muted); text-align: center; }
+  .sym { fill: var(--surface); stroke: currentColor; stroke-width: 1.8; }
+  .sym.entity { fill: var(--accent-soft); }
+  .ln { stroke: currentColor; stroke-width: 1.8; }
+  .edge { stroke: currentColor; stroke-width: 1.4; }
+  .edge.alt { stroke-dasharray: 6 4; }
+  .lbl-bg { fill: var(--surface); }
+  .elabel { font-size: 11px; fill: var(--muted); }
+  .nlabel { font-size: 12.5px; fill: currentColor; font-weight: 500; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .legend svg { width: 44px; height: 30px; color: var(--fg); }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 13px; color: var(--muted); font-weight: 600; background: var(--bg); }
+  tr:last-child td { border-bottom: 0; }
+  td.no { font-variant-numeric: tabular-nums; color: var(--muted); width: 36px; }
+  .obj { font-family: var(--font-mono); font-size: 12.5px; white-space: nowrap; }
+  .new { display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--warn-soft); color: var(--warn); margin-left: 6px; }
+  .findings { display: grid; gap: 12px; padding: 0; margin: 0; list-style: none; }
+  .findings li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 4px; }
+  .findings strong { font-size: 15px; }
+  .findings p { font-size: 14px; color: var(--muted); }
+  code { font-family: var(--font-mono); font-size: 12.5px; background: var(--accent-soft); color: var(--accent); padding: 1px 5px; border-radius: 4px; }
+</style>
+
+<main>
+  <header>
+    <span class="tag">UC-HK-001 · Login · 4.2.1 Robustness Analysis</span>
+    <h1>Robustness diagram use case Login</h1>
+    <p class="lead">Langkah use case Login dipetakan ke boundary, control, dan entity sesuai notasi ICONIX. Alurnya mengikuti perilaku aplikasi yang sudah dibangun.</p>
+  </header>
+
+  <section aria-labelledby="diagram">
+    <h2 id="diagram">Diagram</h2>
+    <figure>
+      <div class="canvas"><svg viewBox="0 0 1050 490" role="img" aria-label="Robustness diagram use case Login: aktor membuka Halaman Login, sistem memeriksa sesi, memvalidasi isian, memeriksa kredensial pada entity Pengguna, lalu menentukan halaman awal Dashboard untuk pemilik atau Orders untuk admin; isian tidak valid atau kredensial tidak cocok menampilkan pesan error di Halaman Login."><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs><line x1="86.0" y1="250.0" x2="177.0" y2="250.0" class="edge" marker-end="url(#arrow)"/><rect x="78.7" y="229.0" width="105.6" height="15" rx="3" class="lbl-bg"/><text x="131.5" y="240.5" class="elabel" text-anchor="middle">membuka, mengisi</text><line x1="234.8" y1="230.2" x2="368.8" y2="96.2" class="edge" marker-end="url(#arrow)"/><rect x="255.8" y="145.7" width="75.1" height="15" rx="3" class="lbl-bg"/><text x="293.3" y="157.2" class="elabel" text-anchor="middle">saat dimuat</text><line x1="415.7" y1="86.2" x2="762.5" y2="238.0" class="edge alt" marker-end="url(#arrow)"/><rect x="559.4" y="142.1" width="69.0" height="15" rx="3" class="lbl-bg"/><text x="593.9" y="153.6" class="elabel" text-anchor="middle">sesi aktif</text><line x1="243.0" y1="250.0" x2="360.0" y2="250.0" class="edge" marker-end="url(#arrow)"/><rect x="267.0" y="229.0" width="69.0" height="15" rx="3" class="lbl-bg"/><text x="301.5" y="240.5" class="elabel" text-anchor="middle">klik Login</text><line x1="418.0" y1="250.0" x2="545.0" y2="250.0" class="edge" marker-end="url(#arrow)"/><rect x="443.9" y="229.0" width="75.1" height="15" rx="3" class="lbl-bg"/><text x="481.5" y="240.5" class="elabel" text-anchor="middle">isian valid</text><line x1="390.0" y1="278.0" x2="390.0" y2="380.0" class="edge alt" marker-end="url(#arrow)"/><rect x="348.1" y="320.0" width="111.7" height="15" rx="3" class="lbl-bg"/><text x="404.0" y="331.5" class="elabel" text-anchor="middle">isian tidak valid</text><line x1="553.8" y1="268.3" x2="412.7" y2="390.4" class="edge alt" marker-end="url(#arrow)"/><rect x="453.6" y="329.4" width="75.1" height="15" rx="3" class="lbl-bg"/><text x="491.1" y="340.9" class="elabel" text-anchor="middle">tidak cocok</text><line x1="369.3" y1="391.1" x2="237.1" y2="270.2" class="edge alt" marker-end="url(#arrow)"/><rect x="244.0" y="332.0" width="99.5" height="15" rx="3" class="lbl-bg"/><text x="293.8" y="343.5" class="elabel" text-anchor="middle">tampilkan pesan</text><line x1="589.4" y1="274.0" x2="664.6" y2="399.3" class="edge" marker-end="url(#arrow)"/><rect x="589.2" y="320.4" width="99.5" height="15" rx="3" class="lbl-bg"/><text x="639.0" y="331.9" class="elabel" text-anchor="middle">cari &amp; cocokkan</text><line x1="603.0" y1="250.0" x2="760.0" y2="250.0" class="edge" marker-end="url(#arrow)"/><rect x="662.2" y="229.0" width="38.5" height="15" rx="3" class="lbl-bg"/><text x="681.5" y="240.5" class="elabel" text-anchor="middle">cocok</text><line x1="775.1" y1="273.7" x2="696.0" y2="399.6" class="edge" marker-end="url(#arrow)"/><rect x="712.9" y="335.1" width="69.0" height="15" rx="3" class="lbl-bg"/><text x="747.4" y="346.6" class="elabel" text-anchor="middle">baca peran</text><line x1="814.9" y1="237.2" x2="951.2" y2="167.3" class="edge" marker-end="url(#arrow)"/><rect x="852.2" y="182.6" width="50.7" height="15" rx="3" class="lbl-bg"/><text x="877.6" y="194.1" class="elabel" text-anchor="middle">pemilik</text><line x1="814.9" y1="262.8" x2="951.2" y2="332.7" class="edge" marker-end="url(#arrow)"/><rect x="858.3" y="299.4" width="38.5" height="15" rx="3" class="lbl-bg"/><text x="877.6" y="310.9" class="elabel" text-anchor="middle">admin</text><circle cx="60" cy="220" r="9" class="sym"/><line x1="60" y1="229" x2="60" y2="258" class="ln"/><line x1="44" y1="240" x2="76" y2="240" class="ln"/><polyline points="47,280 60,258 73,280" class="ln" fill="none"/><text x="60" y="300" class="nlabel" text-anchor="middle">Admin /</text><text x="60" y="315" class="nlabel" text-anchor="middle">Pemilik</text><circle cx="215" cy="250" r="24" class="sym boundary"/><line x1="181" y1="228" x2="181" y2="272" class="ln"/><line x1="181" y1="250" x2="191" y2="250" class="ln"/><text x="203" y="292" class="nlabel" text-anchor="middle">Halaman Login</text><circle cx="390" cy="75" r="24" class="sym control"/><polyline points="396,44 388,51 396,58" class="ln" fill="none"/><text x="390" y="117" class="nlabel" text-anchor="middle">Periksa sesi</text><text x="390" y="132" class="nlabel" text-anchor="middle">aktif</text><circle cx="390" cy="250" r="24" class="sym control"/><polyline points="396,219 388,226 396,233" class="ln" fill="none"/><text x="390" y="189" class="nlabel" text-anchor="middle">Validasi isian</text><text x="390" y="204" class="nlabel" text-anchor="middle">email &amp; kata sandi</text><circle cx="390" cy="410" r="24" class="sym control"/><polyline points="396,379 388,386 396,393" class="ln" fill="none"/><text x="390" y="452" class="nlabel" text-anchor="middle">Tampilkan</text><text x="390" y="467" class="nlabel" text-anchor="middle">pesan error</text><circle cx="575" cy="250" r="24" class="sym control"/><polyline points="581,219 573,226 581,233" class="ln" fill="none"/><text x="575" y="189" class="nlabel" text-anchor="middle">Periksa</text><text x="575" y="204" class="nlabel" text-anchor="middle">kredensial</text><circle cx="680" cy="425" r="24" class="sym entity"/><line x1="656" y1="449" x2="704" y2="449" class="ln"/><text x="680" y="473" class="nlabel" text-anchor="middle">Pengguna</text><circle cx="790" cy="250" r="24" class="sym control"/><polyline points="796,219 788,226 796,233" class="ln" fill="none"/><text x="790" y="189" class="nlabel" text-anchor="middle">Tentukan halaman</text><text x="790" y="204" class="nlabel" text-anchor="middle">awal sesuai peran</text><circle cx="985" cy="150" r="24" class="sym boundary"/><line x1="951" y1="128" x2="951" y2="172" class="ln"/><line x1="951" y1="150" x2="961" y2="150" class="ln"/><text x="985" y="192" class="nlabel" text-anchor="middle">Halaman</text><text x="985" y="207" class="nlabel" text-anchor="middle">Dashboard</text><circle cx="985" cy="350" r="24" class="sym boundary"/><line x1="951" y1="328" x2="951" y2="372" class="ln"/><line x1="951" y1="350" x2="961" y2="350" class="ln"/><text x="985" y="392" class="nlabel" text-anchor="middle">Halaman</text><text x="985" y="407" class="nlabel" text-anchor="middle">Orders</text></svg></div>
+      <figcaption>Gambar 4.x Robustness Diagram Use Case Login. Garis putus-putus adalah alur alternatif.</figcaption>
+    </figure>
+    <div class="legend" aria-label="Keterangan simbol">
+      <span><svg viewBox="0 0 44 30" aria-hidden="true"><circle cx="22" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="22" y1="11" x2="22" y2="20" stroke="currentColor" stroke-width="1.5"/><line x1="15" y1="14" x2="29" y2="14" stroke="currentColor" stroke-width="1.5"/><polyline points="16,28 22,20 28,28" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Aktor</span>
+      <span><svg viewBox="0 0 44 30" aria-hidden="true"><line x1="10" y1="5" x2="10" y2="25" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="15" x2="16" y2="15" stroke="currentColor" stroke-width="1.5"/><circle cx="27" cy="15" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Boundary (antarmuka)</span>
+      <span><svg viewBox="0 0 44 30" aria-hidden="true"><circle cx="22" cy="17" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/><polyline points="26,2 21,6 26,10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Control (logika)</span>
+      <span><svg viewBox="0 0 44 30" aria-hidden="true"><circle cx="22" cy="13" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="11" y1="25" x2="33" y2="25" stroke="currentColor" stroke-width="1.5"/></svg>Entity (data)</span>
+      <span><svg viewBox="0 0 44 30" aria-hidden="true"><line x1="4" y1="15" x2="40" y2="15" stroke="currentColor" stroke-width="1.5"/></svg>Alur utama</span>
+      <span><svg viewBox="0 0 44 30" aria-hidden="true"><line x1="4" y1="15" x2="40" y2="15" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 4"/></svg>Alur alternatif</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="pemetaan">
+    <h2 id="pemetaan">Pemetaan langkah ke objek</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>No</th><th>Langkah use case</th><th>Objek</th><th>Jenis</th></tr></thead>
+        <tbody>
+          <tr><td class="no">1</td><td>Aktor membuka halaman autentikasi</td><td class="obj">Halaman Login</td><td>Boundary</td></tr>
+          <tr><td class="no">2</td><td>Sistem memeriksa apakah aktor sudah login; jika ya, langsung ke halaman awal<span class="new">baru</span></td><td class="obj">Periksa sesi aktif</td><td>Control</td></tr>
+          <tr><td class="no">3</td><td>Aktor memasukkan email dan kata sandi, lalu klik Login</td><td class="obj">Halaman Login</td><td>Boundary</td></tr>
+          <tr><td class="no">4</td><td>Sistem memeriksa isian wajib dan format email</td><td class="obj">Validasi isian</td><td>Control</td></tr>
+          <tr><td class="no">5</td><td>Sistem mencari pengguna dan mencocokkan kata sandi</td><td class="obj">Periksa kredensial → Pengguna</td><td>Control, Entity</td></tr>
+          <tr><td class="no">6</td><td>Sistem membaca peran pengguna dan menentukan halaman awal</td><td class="obj">Tentukan halaman awal → Pengguna</td><td>Control, Entity</td></tr>
+          <tr><td class="no">7</td><td>Sistem menampilkan Dashboard (pemilik) atau Orders (admin)</td><td class="obj">Halaman Dashboard / Orders</td><td>Boundary</td></tr>
+          <tr><td class="no">A</td><td>Isian tidak valid atau kredensial tidak cocok: sistem menampilkan pesan error</td><td class="obj">Tampilkan pesan error → Halaman Login</td><td>Control, Boundary</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="temuan">
+    <h2 id="temuan">Temuan robustness analysis</h2>
+    <ul class="findings">
+      <li><strong>Alur aktor yang sudah login belum ada di use case</strong><p>Saat Halaman Login dibuka oleh aktor yang sesinya masih aktif, sistem langsung mengarahkan ke halaman awal sesuai peran. Ini ditambahkan sebagai skenario alternatif.</p></li>
+      <li><strong>Dua jenis kegagalan perlu dibedakan</strong><p>Isian kosong atau format email salah ditolak sebelum database diperiksa; email atau kata sandi yang tidak cocok ditolak setelah pemeriksaan. Keduanya kembali ke Halaman Login dengan pesan yang berbeda.</p></li>
+      <li><strong>Entity Pengguna belum ada di domain model</strong><p>Pemeriksaan kredensial dan penentuan peran membutuhkan data Pengguna (email, kata sandi, peran). Agar lolos Milestone 2, Pengguna ditambahkan ke domain model sebagai kelas tersendiri tanpa asosiasi ke objek bisnis.</p></li>
+      <li><strong>Penentuan halaman awal adalah logika tersendiri</strong><p>Control yang sama dipakai setelah login berhasil dan saat sesi masih aktif. Jika aktor sebelumnya membuka halaman tertentu sebelum login, sistem mengembalikannya ke halaman tersebut.</p></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="revisi">
+    <h2 id="revisi">Use case scenario Login (revisi)</h2>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><th style="width: 190px;">ID Use Case</th><td>UC-HK-001</td></tr>
+          <tr><th>Nama</th><td>Login</td></tr>
+          <tr><th>Aktor</th><td>Admin, Pemilik</td></tr>
+          <tr><th>Deskripsi</th><td>Aktor masuk ke sistem menggunakan email dan kata sandi.</td></tr>
+          <tr><th>Kondisi Awal</th><td>Aktor belum login</td></tr>
+          <tr><th>Skenario Utama</th><td>1. Aktor membuka halaman autentikasi<br>2. Sistem memeriksa sesi aktor dan menampilkan halaman autentikasi<br>3. Aktor memasukkan email dan kata sandi<br>4. Aktor klik tombol Login<br>5. Sistem memvalidasi isian email dan kata sandi<br>6. Sistem memeriksa kecocokan email dan kata sandi pada data pengguna<br>7. Sistem menentukan halaman awal berdasarkan peran pengguna<br>8. Sistem menampilkan halaman Dashboard jika pemilik, atau halaman Orders jika admin</td></tr>
+          <tr><th>Skenario Alternatif/Pengecualian</th><td>2a. Jika aktor masih memiliki sesi aktif, sistem langsung menampilkan halaman awal sesuai peran<span class="new">baru</span><br>5a. Jika email atau kata sandi kosong, atau format email tidak valid, sistem menampilkan pesan pada isian yang salah<span class="new">baru</span><br>6a. Jika email dan kata sandi tidak cocok, sistem menampilkan pesan "Email atau password tidak sesuai."</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="lead">Implementasi: <code>AuthController@showLogin</code> (periksa sesi aktif), <code>AuthController@login</code> (validasi isian, periksa kredensial), <code>User::homeRoute()</code> (tentukan halaman awal).</p>
+  </section>
+</main>
