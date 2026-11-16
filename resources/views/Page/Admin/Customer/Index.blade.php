@@ -92,9 +92,21 @@
                                                         <a href="{{ route('customer.edit', $customer) }}" class="btn btn-sm btn-soft-primary me-1">
                                                             <i class="bx bx-edit fs-18"></i>
                                                         </a>
-                                                        <button type="button" class="btn btn-sm btn-soft-danger" disabled>
-                                                            <i class="bx bx-trash fs-16"></i>
-                                                        </button>
+                                                        @if ($customer->orders_count > 0)
+                                                            <span class="d-inline-block" tabindex="0" title="Tidak dapat dihapus: pelanggan masih memiliki pesanan">
+                                                                <button type="button" class="btn btn-sm btn-soft-danger" disabled>
+                                                                    <i class="bx bx-trash fs-16"></i>
+                                                                </button>
+                                                            </span>
+                                                        @else
+                                                            <form method="POST" action="{{ route('customer.destroy', $customer) }}" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-sm btn-soft-danger" title="Hapus pelanggan" onclick="return confirm('Hapus pelanggan {{ $customer->name }}?')">
+                                                                    <i class="bx bx-trash fs-16"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @empty

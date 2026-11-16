@@ -79,10 +79,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/supplier', [SupplierController::class, 'store'])->name('supplier.store');
     Route::get('/supplier/{supplier}/edit', [SupplierController::class, 'edit'])->name('supplier.edit');
     Route::put('/supplier/{supplier}', [SupplierController::class, 'update'])->name('supplier.update');
+    Route::delete('/supplier/{supplier}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
 
     Route::get('/customer', [CustomerController::class, 'index'])->name('customer');
     Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
     Route::post('/customer', [CustomerController::class, 'store'])->name('customer.store');
     Route::get('/customer/{customer}/edit', [CustomerController::class, 'edit'])->name('customer.edit');
     Route::put('/customer/{customer}', [CustomerController::class, 'update'])->name('customer.update');
+    Route::delete('/customer/{customer}', [CustomerController::class, 'destroy'])->name('customer.destroy');
 });

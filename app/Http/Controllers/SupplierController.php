@@ -12,7 +12,7 @@ class SupplierController extends Controller
     //
     public function index(Request $request)
     {
-        $suppliersQuery = Suppliers::query();
+        $suppliersQuery = Suppliers::query()->withCount('procurements');
 
         $q = $request->queryTrimmed('q');
         if ($q !== '') {
@@ -89,5 +89,19 @@ class SupplierController extends Controller
         return redirect()
             ->route('supplier')
             ->with('success', 'Supplier updated successfully');
+    }
+
+    /** Pemasok yang masih memiliki pengadaan tidak dapat dihapus agar riwayat pengadaan tetap utuh. */
+    public function destroy(Suppliers $supplier)
+    {
+        if ($supplier->procurements()->exists()) {
+            return back()->with('error', 'Pemasok masih memiliki pengadaan bahan sehingga tidak dapat dihapus.');
+        }
+
+        $supplier->delete();
+
+        return redirect()
+            ->route('supplier')
+            ->with('success', 'Pemasok berhasil dihapus.');
     }
 }

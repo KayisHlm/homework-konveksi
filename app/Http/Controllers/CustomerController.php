@@ -79,4 +79,17 @@ class CustomerController extends Controller
             ->with('success', 'Customer updated successfully');
     }
 
+    /** Pelanggan yang masih memiliki pesanan tidak dapat dihapus agar riwayat pesanan tetap utuh. */
+    public function destroy(Customer $customer)
+    {
+        if ($customer->orders()->exists()) {
+            return back()->with('error', 'Pelanggan masih memiliki pesanan sehingga tidak dapat dihapus.');
+        }
+
+        $customer->delete();
+
+        return redirect()
+            ->route('customer')
+            ->with('success', 'Pelanggan berhasil dihapus.');
+    }
 }

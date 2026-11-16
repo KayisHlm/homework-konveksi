@@ -94,9 +94,21 @@
                                                             <a href="{{ route('supplier.edit', $supplier) }}" class="btn btn-sm btn-soft-primary">
                                                                 <i class="bx bx-edit fs-18"></i>
                                                             </a>
-                                                            <button type="button" class="btn btn-sm btn-soft-danger" disabled>
-                                                                <i class="bx bx-trash fs-18"></i>
-                                                            </button>
+                                                            @if ($supplier->procurements_count > 0)
+                                                                <span class="d-inline-block" tabindex="0" title="Tidak dapat dihapus: pemasok masih memiliki pengadaan">
+                                                                    <button type="button" class="btn btn-sm btn-soft-danger" disabled>
+                                                                        <i class="bx bx-trash fs-18"></i>
+                                                                    </button>
+                                                                </span>
+                                                            @else
+                                                                <form method="POST" action="{{ route('supplier.destroy', $supplier) }}" class="d-inline">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-sm btn-soft-danger" title="Hapus pemasok" onclick="return confirm('Hapus pemasok {{ $supplier->store_name }}?')">
+                                                                        <i class="bx bx-trash fs-18"></i>
+                                                                    </button>
+                                                                </form>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>
